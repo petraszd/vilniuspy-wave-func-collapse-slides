@@ -8,6 +8,22 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "WFCCollapser",
+"language": "GDScript",
+"path": "res://Scripts/WFCCollapser.gd"
+}, {
+"base": "Node2D",
+"class": "WFCTile",
+"language": "GDScript",
+"path": "res://Scripts/WFCTile.gd"
+} ]
+_global_script_class_icons={
+"WFCCollapser": "",
+"WFCTile": ""
+}
+
 [application]
 
 config/name="Wave Function Collapse Demo"

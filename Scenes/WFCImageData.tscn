@@ -6,5 +6,4 @@
 [node name="WFCImageData" type="Node"]
 script = ExtResource( 1 )
 tiles_texture = ExtResource( 2 )
-num_cols = 4
-num_rows = 4
+num_img_parts = 4

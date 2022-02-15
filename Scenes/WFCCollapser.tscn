@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/WFCCollapser.gd" type="Script" id=1]
+
+[node name="WFCCollapser" type="Node2D"]
+script = ExtResource( 1 )
+num_cols = 5
+num_rows = 3
+
+[node name="Groups" type="Node" parent="."]
