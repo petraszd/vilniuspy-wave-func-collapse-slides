@@ -7,4 +7,4 @@ script = ExtResource( 1 )
 num_cols = 5
 num_rows = 3
 
-[node name="Groups" type="Node" parent="."]
+[node name="Groups" type="Node2D" parent="."]
