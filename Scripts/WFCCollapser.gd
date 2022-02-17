@@ -21,8 +21,8 @@ func generate_tiles():
     for y in range(num_rows):
         for x in range(num_cols):
             var tile = tile_scene.instance()
-            $Groups.add_child(tile)
             tile.idx = y * num_cols + x
+            $Groups.add_child(tile)
             tile.position.x = x
             tile.position.y = y
             tiles.append(tile)
