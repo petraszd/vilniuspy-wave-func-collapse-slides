@@ -10,8 +10,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="WFCCollapser" parent="." instance=ExtResource( 1 )]
+
 [node name="DisplayFPS" parent="." instance=ExtResource( 2 )]
 margin_right = 0.0
 margin_bottom = 0.0
-
-[node name="WFCCollapser" parent="." instance=ExtResource( 1 )]

@@ -3,6 +3,7 @@ extends Node2D
 
 
 var idx: int
+const margin_percentage = 0.2
 
 
 func _ready():
@@ -20,12 +21,14 @@ func _draw():
     var img_part_w = img_w / num_img_parts
     var img_part_h = img_h / num_img_parts
 
-    var segment = 1.0 / num_img_parts
+    var full_segment = 1.0 / num_img_parts
+    var margin = full_segment * margin_percentage
+    var segment = full_segment - 2 * margin
 
     for y in range(num_img_parts):
         for x in range(num_img_parts):
-            rect.position.x = x * segment
-            rect.position.y = y * segment
+            rect.position.x = margin + x * full_segment
+            rect.position.y = margin + y * full_segment
             rect.size.x = segment
             rect.size.y = segment
 
