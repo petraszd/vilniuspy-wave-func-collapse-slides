@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node2D",
+"base": "Control",
 "class": "WFCCollapser",
 "language": "GDScript",
 "path": "res://Scripts/WFCCollapser.gd"
@@ -39,6 +39,10 @@ WFCImageData="*res://Scenes/WFCImageData.tscn"
 window/size/width=2048
 window/size/height=1200
 window/dpi/allow_hidpi=true
+
+[gui]
+
+theme/use_hidpi=true
 
 [physics]
 

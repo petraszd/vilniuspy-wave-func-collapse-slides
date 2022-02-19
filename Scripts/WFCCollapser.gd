@@ -1,5 +1,5 @@
 class_name WFCCollapser
-extends Node2D
+extends Control
 
 
 export(int) var padding = 20
@@ -17,6 +17,26 @@ func _ready():
     generate_tiles()
     rescale_groups_wrapper()
 
+func _process(_delta):
+    process_mouse_position()
+
+func process_mouse_position():
+    var mouse_pos = $Groups.get_local_mouse_position()
+    if (
+        mouse_pos.x <= 0.0 or
+        mouse_pos.y <= 0.0 or
+        mouse_pos.x >= num_cols or
+        mouse_pos.y >= num_rows
+    ):
+        return
+
+    var int_x = int(mouse_pos.x)
+    var int_y = int(mouse_pos.y)
+    var tile_idx = int_y * num_cols + int_x
+    tiles[tile_idx].process_local_mouse_position(
+        mouse_pos - Vector2(int_x, int_y)
+    )
+
 func generate_tiles():
     for y in range(num_rows):
         for x in range(num_cols):
@@ -28,7 +48,9 @@ func generate_tiles():
             tiles.append(tile)
 
 func rescale_groups_wrapper():
-    var screen_size = get_viewport().size
+    #var screen_size = get_viewport().size
+    var screen_size = get_global_rect().size
+
     if screen_size.x == 0 or screen_size.y == 0:
         return
 
