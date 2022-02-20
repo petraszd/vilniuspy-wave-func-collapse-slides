@@ -9,6 +9,8 @@ export(int) var num_rows = 1
 
 var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
+var tile_idx_with_hovered: int = WFCTile.NO_INDEX
+var is_left_pressed: bool = false
 
 
 func _ready():
@@ -19,6 +21,7 @@ func _ready():
 
 func _process(_delta):
     process_mouse_position()
+    process_mouse_click()
 
 func process_mouse_position():
     var mouse_pos = $Groups.get_local_mouse_position()
@@ -28,14 +31,34 @@ func process_mouse_position():
         mouse_pos.x >= num_cols or
         mouse_pos.y >= num_rows
     ):
+        if tile_idx_with_hovered != WFCTile.NO_INDEX:
+            tiles[tile_idx_with_hovered].remove_hovered()
+        tile_idx_with_hovered = WFCTile.NO_INDEX
         return
 
     var int_x = int(mouse_pos.x)
     var int_y = int(mouse_pos.y)
     var tile_idx = int_y * num_cols + int_x
-    tiles[tile_idx].process_local_mouse_position(
+
+    var is_hovered = tiles[tile_idx].process_local_mouse_position(
         mouse_pos - Vector2(int_x, int_y)
     )
+    if is_hovered:
+        if tile_idx != tile_idx_with_hovered and tile_idx_with_hovered != WFCTile.NO_INDEX:
+            tiles[tile_idx_with_hovered].remove_hovered()
+        tile_idx_with_hovered = tile_idx
+    else:
+        if tile_idx_with_hovered != WFCTile.NO_INDEX:
+            tiles[tile_idx_with_hovered].remove_hovered()
+        tile_idx_with_hovered = WFCTile.NO_INDEX
+
+func process_mouse_click():
+    if Input.is_mouse_button_pressed(BUTTON_LEFT):
+        is_left_pressed = true
+    elif is_left_pressed:
+        is_left_pressed = false
+        if tile_idx_with_hovered != WFCTile.NO_INDEX:
+            tiles[tile_idx_with_hovered].process_click()
 
 func generate_tiles():
     for y in range(num_rows):
@@ -48,7 +71,6 @@ func generate_tiles():
             tiles.append(tile)
 
 func rescale_groups_wrapper():
-    #var screen_size = get_viewport().size
     var screen_size = get_global_rect().size
 
     if screen_size.x == 0 or screen_size.y == 0:
@@ -61,8 +83,6 @@ func rescale_groups_wrapper():
     var screen_y = screen_size.y - padding * 2
     if screen_y < padding:
         screen_y = screen_size.y
-
-    # TODO: screen size padding
 
     var x_ratio = screen_x / num_cols
     var y_ratio = screen_y / num_rows

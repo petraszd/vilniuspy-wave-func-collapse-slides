@@ -2,9 +2,13 @@ class_name WFCTile
 extends Node2D
 
 
+const outer_margin = 0.02  # fraction
+const inner_margin = 0.05  # fraction
+const NO_INDEX = -1
+
 var idx: int
-const inner_margin_fraction = 0.0
-const outer_margin_fraction = 0.1
+
+var hovered: int = NO_INDEX
 
 
 func _ready():
@@ -22,54 +26,67 @@ func _draw():
     var img_part_w = img_w / num_img_parts
     var img_part_h = img_h / num_img_parts
 
-    var full_segment = 1.0 / num_img_parts
-    var margin = full_segment * inner_margin_fraction
-    var segment = full_segment - 2 * margin
+    var segment = (1.0 - outer_margin * 2) / num_img_parts
+    var item_size = segment - inner_margin * 2 / num_img_parts
+
+    var delta = outer_margin + (segment - item_size) * 0.5
 
     for y in range(num_img_parts):
         for x in range(num_img_parts):
-            pos_rect.position.x = margin + x * full_segment
-            pos_rect.position.y = margin + y * full_segment
-            pos_rect.size.x = segment
-            pos_rect.size.y = segment
+            pos_rect.position.x = delta + x * segment
+            pos_rect.position.y = delta + y * segment
+            pos_rect.size.x = item_size
+            pos_rect.size.y = item_size
 
             tex_rect.position.x = img_part_w * x
             tex_rect.position.y = img_part_h * y
             tex_rect.size.x = img_part_w
             tex_rect.size.y = img_part_h
+
+            var modulate_color: Color
+            if hovered == y * num_img_parts + x:
+                modulate_color = Color(1, 1, 1, 0.5)
+            else:
+                modulate_color = Color(1, 1, 1, 1)
             draw_texture_rect_region(
                 WFCImageData.tiles_texture,
-                pos_rect, tex_rect
+                pos_rect, tex_rect, modulate_color
             )
 
-    draw_debug()
+    #draw_debug()
 
 func draw_debug():
-    var num_img_parts = WFCImageData.num_img_parts
-    for y in range(num_img_parts):
-        for x in range(num_img_parts):
-            draw_debug_item(x, y)
-
-    var line_color = Color(1.0, 0.0, 0.0)
+    var line_color = Color(1.0, 0.4, 0.4)
     draw_line(Vector2(0, 0), Vector2(1, 0), line_color)
     draw_line(Vector2(1, 0), Vector2(1, 1), line_color)
     draw_line(Vector2(1, 1), Vector2(0, 1), line_color)
     draw_line(Vector2(0, 1), Vector2(0, 0), line_color)
 
-func draw_debug_item(x, y):
-    var segment = 1.0 / WFCImageData.num_img_parts
-
-    var x0 = segment * x
-    var y0 = segment * y
-
-    var x1 = segment * (x + 1)
-    var y1 = segment * (y + 1)
-
-    var line_color = Color(0.0, 0.0, 1.0)
-    draw_line(Vector2(x0, y0), Vector2(x1, y0), line_color)
-    draw_line(Vector2(x1, y0), Vector2(x1, y1), line_color)
-    draw_line(Vector2(x1, y1), Vector2(x0, y1), line_color)
-    draw_line(Vector2(x0, y1), Vector2(x0, y0), line_color)
-
 func process_local_mouse_position(mouse_pos):
-    print(idx, " --> ", mouse_pos)
+    if (
+        mouse_pos.x < outer_margin or
+        mouse_pos.y < outer_margin or
+        mouse_pos.x > 1.0 - outer_margin or
+        mouse_pos.y > 1.0 - outer_margin
+    ):
+        hovered = NO_INDEX
+    else:
+        var num_img_parts = WFCImageData.num_img_parts
+        var segment = (1.0 - outer_margin * 2) / num_img_parts
+
+        var int_x = int((mouse_pos.x - outer_margin) / segment)
+        var int_y = int((mouse_pos.y - outer_margin) / segment)
+
+        hovered = int_y * num_img_parts + int_x
+
+    update()
+    return hovered != NO_INDEX
+
+func remove_hovered():
+    hovered = NO_INDEX
+    update()
+
+
+func process_click():
+    # TODO: continue
+    print("CLICKED ON ", hovered)
