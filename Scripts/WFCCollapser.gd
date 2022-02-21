@@ -9,8 +9,7 @@ export(int) var num_rows = 1
 
 var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
-var tile_idx_with_hovered: int = WFCTile.NO_INDEX
-var is_left_pressed: bool = false
+var is_mouse_pressed: bool = false
 
 
 func _ready():
@@ -20,45 +19,40 @@ func _ready():
     rescale_groups_wrapper()
 
 func _process(_delta):
-    process_mouse_position()
-    process_mouse_click()
+    var prev_is_mouse_pressed = is_mouse_pressed
+    is_mouse_pressed = Input.is_mouse_button_pressed(BUTTON_LEFT)
+
+    var hovered_idx = process_mouse_position()
+    if hovered_idx != WFC.NO_INDEX and not is_mouse_pressed and prev_is_mouse_pressed:
+        tiles[hovered_idx].process_click()
 
 func process_mouse_position():
+    var result = WFC.NO_INDEX
     var mouse_pos = $Groups.get_local_mouse_position()
     if (
-        mouse_pos.x <= 0.0 or
-        mouse_pos.y <= 0.0 or
-        mouse_pos.x >= num_cols or
-        mouse_pos.y >= num_rows
+        mouse_pos.x > 0.0 and
+        mouse_pos.y > 0.0 and
+        mouse_pos.x < num_cols and
+        mouse_pos.y < num_rows
     ):
-        if tile_idx_with_hovered != WFCTile.NO_INDEX:
-            tiles[tile_idx_with_hovered].remove_hovered()
-        tile_idx_with_hovered = WFCTile.NO_INDEX
-        return
+        var int_x = int(mouse_pos.x)
+        var int_y = int(mouse_pos.y)
+        var tile_idx = int_y * num_cols + int_x
 
-    var int_x = int(mouse_pos.x)
-    var int_y = int(mouse_pos.y)
-    var tile_idx = int_y * num_cols + int_x
+        var is_hovered = tiles[tile_idx].process_local_mouse_position(
+            mouse_pos - Vector2(int_x, int_y)
+        )
+        if is_hovered:
+            result = tile_idx
 
-    var is_hovered = tiles[tile_idx].process_local_mouse_position(
-        mouse_pos - Vector2(int_x, int_y)
-    )
-    if is_hovered:
-        if tile_idx != tile_idx_with_hovered and tile_idx_with_hovered != WFCTile.NO_INDEX:
-            tiles[tile_idx_with_hovered].remove_hovered()
-        tile_idx_with_hovered = tile_idx
-    else:
-        if tile_idx_with_hovered != WFCTile.NO_INDEX:
-            tiles[tile_idx_with_hovered].remove_hovered()
-        tile_idx_with_hovered = WFCTile.NO_INDEX
+    cleanup_hovered_from_all_tiles(result)
+    return result
 
-func process_mouse_click():
-    if Input.is_mouse_button_pressed(BUTTON_LEFT):
-        is_left_pressed = true
-    elif is_left_pressed:
-        is_left_pressed = false
-        if tile_idx_with_hovered != WFCTile.NO_INDEX:
-            tiles[tile_idx_with_hovered].process_click()
+func cleanup_hovered_from_all_tiles(hovered_idx):
+    for i in range(len(tiles)):
+        if i != hovered_idx:
+            tiles[i].remove_hovered_if_needed()
+
 
 func generate_tiles():
     for y in range(num_rows):
