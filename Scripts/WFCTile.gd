@@ -2,6 +2,14 @@ class_name WFCTile
 extends Node2D
 
 
+class Sizes:
+    var segment: float
+    var img_part_w: float
+    var img_part_h: float
+    var item_size: float
+    var hover_icon_len: float
+    var pos_delta: float
+
 enum TileState {
     INIT, SELECTED_ANIMATING, SELECTED
 }
@@ -20,62 +28,95 @@ var current_state: int = TileState.INIT
 
 var selected_anim_t: float = 0.0
 
+var hov_rect = Rect2()
+var pos_rect = Rect2()
+var tex_rect = Rect2()
+var sizes: Sizes
+
 
 func _ready():
     set_name("Tile %d" % idx)
+    sizes = Sizes.new()
+    fill_sizes_var()
 
 func _draw():
-    var pos_rect = Rect2()
-    var tex_rect = Rect2()
-
     var num_img_parts = WFCImageData.num_img_parts
-
-    var img_w = WFCImageData.img.get_width()
-    var img_h = WFCImageData.img.get_height()
-
-    var img_part_w = img_w / num_img_parts
-    var img_part_h = img_h / num_img_parts
-
-    var segment = (1.0 - outer_margin * 2) / num_img_parts
-    var item_size = segment - inner_margin * 2 / num_img_parts
-    var hover_icon_len = segment * inner_margin
-
-    var delta = outer_margin + (segment - item_size) * 0.5
-
     for y in range(num_img_parts):
         for x in range(num_img_parts):
-            var modulate_color: Color
             var i = y * num_img_parts + x
+            draw_item(i, x, y)
+
+func draw_item(i, x, y):
+    match current_state:
+        TileState.INIT:
             if hovered == i:
-                pos_rect.position.x = delta + x * segment - hover_icon_len
-                pos_rect.position.y = delta + y * segment - hover_icon_len
-                pos_rect.size.x = item_size + hover_icon_len * 2
-                pos_rect.size.y = item_size + hover_icon_len * 2
-                draw_rect(pos_rect, Color(1, 1, 1, 1))
-                modulate_color = Color(1, 1, 1, 0.75)
-            elif current_state == TileState.SELECTED_ANIMATING:
-                if selected == i:
-                    modulate_color = Color(1, 1, 1, 1)
-                else:
-                    modulate_color = Color(1, 1, 1, 1.0 - selected_anim_t)
+                draw_hover_indicator(x, y)
+                draw_small_item(x, y, Color(1, 1, 1, 0.75))  # TODO: to const
             else:
-                modulate_color = Color(1, 1, 1, 1)
+                draw_small_item(x, y, Color.white)
+        TileState.SELECTED_ANIMATING:
+            if selected == i:
+                draw_selected_item(x, y, selected_anim_t)
+            else:
+                draw_small_item(x, y, Color(1, 1, 1, 1.0 - selected_anim_t))
+        TileState.SELECTED:
+            if selected == i:
+                draw_selected_item(x, y, 1.0)
 
-            pos_rect.position.x = delta + x * segment
-            pos_rect.position.y = delta + y * segment
-            pos_rect.size.x = item_size
-            pos_rect.size.y = item_size
+func draw_small_item(x, y, modulate_color):
+    pos_rect.position.x = sizes.pos_delta + x * sizes.segment
+    pos_rect.position.y = sizes.pos_delta + y * sizes.segment
+    pos_rect.size.x = sizes.item_size
+    pos_rect.size.y = sizes.item_size
 
-            tex_rect.position.x = img_part_w * x
-            tex_rect.position.y = img_part_h * y
-            tex_rect.size.x = img_part_w
-            tex_rect.size.y = img_part_h
+    tex_rect.position.x = sizes.img_part_w * x
+    tex_rect.position.y = sizes.img_part_h * y
+    tex_rect.size.x = sizes.img_part_w
+    tex_rect.size.y = sizes.img_part_h
+    draw_texture_rect_region(
+        WFCImageData.tiles_texture,
+        pos_rect, tex_rect, modulate_color
+    )
 
-            draw_texture_rect_region(
-                WFCImageData.tiles_texture,
-                pos_rect, tex_rect, modulate_color
-            )
+func draw_selected_item(x, y, anim_t):
+    var pos_x0 = sizes.pos_delta + x * sizes.segment
+    var pos_y0 = sizes.pos_delta + y * sizes.segment
+    var size_x0 = sizes.item_size
+    var size_y0 = sizes.item_size
 
+    var pos_x1 = 0
+    var pos_y1 = 0
+    var size_x1 = 1
+    var size_y1 = 1
+
+    pos_rect.position.x = pos_x0 * (1.0 - anim_t) + pos_x1 * anim_t
+    pos_rect.position.y = pos_y0 * (1.0 - anim_t) + pos_y1 * anim_t
+    pos_rect.size.x = size_x0 * (1.0 - anim_t) + size_x1 * anim_t
+    pos_rect.size.y = size_y0 * (1.0 - anim_t) + size_y1 * anim_t
+
+    # TODO: find out why texture edges looks stupid
+    tex_rect.position.x = sizes.img_part_w * x + 0.6
+    tex_rect.position.y = sizes.img_part_h * y + 0.6
+    tex_rect.size.x = sizes.img_part_w - 0.6
+    tex_rect.size.y = sizes.img_part_h - 0.6
+    draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
+
+func draw_hover_indicator(x, y):
+    hov_rect.position.x = sizes.pos_delta + x * sizes.segment - sizes.hover_icon_len
+    hov_rect.position.y = sizes.pos_delta + y * sizes.segment - sizes.hover_icon_len
+    hov_rect.size.x = sizes.item_size + sizes.hover_icon_len * 2
+    hov_rect.size.y = sizes.item_size + sizes.hover_icon_len * 2
+    draw_rect(hov_rect, Color(1, 1, 1, 1))
+
+func fill_sizes_var():
+    var num_img_parts = WFCImageData.num_img_parts
+
+    sizes.segment = (1.0 - outer_margin * 2) / num_img_parts
+    sizes.img_part_w = WFCImageData.img.get_width() / num_img_parts
+    sizes.img_part_h = WFCImageData.img.get_height() / num_img_parts
+    sizes.item_size = sizes.segment - inner_margin * 2 / num_img_parts
+    sizes.hover_icon_len = sizes.segment * inner_margin
+    sizes.pos_delta = outer_margin + (sizes.segment - sizes.item_size) * 0.5
 
 func process_local_mouse_position(mouse_pos):
     if selected != WFC.NO_INDEX:
@@ -104,7 +145,6 @@ func remove_hovered_if_needed():
     if hovered != WFC.NO_INDEX:
         hovered = WFC.NO_INDEX
         update()
-
 
 func process_click():
     # TODO: continue
