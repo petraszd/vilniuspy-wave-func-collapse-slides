@@ -2,12 +2,23 @@ class_name WFCTile
 extends Node2D
 
 
+enum TileState {
+    INIT, SELECTED_ANIMATING, SELECTED
+}
+
+
 const outer_margin = 0.02  # fraction
 const inner_margin = 0.05  # fraction
+
+onready var tween: Tween = get_node("Tween")
 
 var idx: int
 
 var hovered: int = WFC.NO_INDEX
+var selected: int = WFC.NO_INDEX
+var current_state: int = TileState.INIT
+
+var selected_anim_t: float = 0.0
 
 
 func _ready():
@@ -34,13 +45,19 @@ func _draw():
     for y in range(num_img_parts):
         for x in range(num_img_parts):
             var modulate_color: Color
-            if hovered == y * num_img_parts + x:
+            var i = y * num_img_parts + x
+            if hovered == i:
                 pos_rect.position.x = delta + x * segment - hover_icon_len
                 pos_rect.position.y = delta + y * segment - hover_icon_len
                 pos_rect.size.x = item_size + hover_icon_len * 2
                 pos_rect.size.y = item_size + hover_icon_len * 2
                 draw_rect(pos_rect, Color(1, 1, 1, 1))
                 modulate_color = Color(1, 1, 1, 0.75)
+            elif current_state == TileState.SELECTED_ANIMATING:
+                if selected == i:
+                    modulate_color = Color(1, 1, 1, 1)
+                else:
+                    modulate_color = Color(1, 1, 1, 1.0 - selected_anim_t)
             else:
                 modulate_color = Color(1, 1, 1, 1)
 
@@ -59,16 +76,11 @@ func _draw():
                 pos_rect, tex_rect, modulate_color
             )
 
-    #draw_debug()
-
-func draw_debug():
-    var line_color = Color(1.0, 0.4, 0.4)
-    draw_line(Vector2(0, 0), Vector2(1, 0), line_color)
-    draw_line(Vector2(1, 0), Vector2(1, 1), line_color)
-    draw_line(Vector2(1, 1), Vector2(0, 1), line_color)
-    draw_line(Vector2(0, 1), Vector2(0, 0), line_color)
 
 func process_local_mouse_position(mouse_pos):
+    if selected != WFC.NO_INDEX:
+        return false
+
     if (
         mouse_pos.x < outer_margin or
         mouse_pos.y < outer_margin or
@@ -96,5 +108,21 @@ func remove_hovered_if_needed():
 
 func process_click():
     # TODO: continue
-    print("CLICKED ON ", hovered)
+    selected = hovered
     hovered = WFC.NO_INDEX
+    current_state = TileState.SELECTED_ANIMATING
+    update()
+
+    if not tween.interpolate_property(self, "selected_anim_t", 0.0, 1.0, 0.5):
+        print("Warning: tween does not work!")
+    if not tween.start():
+        print("Warning: tween does not work!")
+    foobar()
+
+
+func foobar():
+    while true:
+        var step_values = yield(tween, "tween_step")
+        update()
+        if step_values[3] >= 1:
+            break
