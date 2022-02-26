@@ -56,12 +56,12 @@ func draw_item(i, x, y):
                 draw_small_item(x, y, Color.white)
         TileState.SELECTED_ANIMATING:
             if selected == i:
-                draw_selected_item(x, y, selected_anim_t)
+                draw_selected_anim_item(x, y, selected_anim_t)
             else:
                 draw_small_item(x, y, Color(1, 1, 1, 1.0 - selected_anim_t))
         TileState.SELECTED:
             if selected == i:
-                draw_selected_item(x, y, 1.0)
+                draw_selected_item(x, y)
 
 func draw_small_item(x, y, modulate_color):
     pos_rect.position.x = sizes.pos_delta + x * sizes.segment
@@ -78,7 +78,7 @@ func draw_small_item(x, y, modulate_color):
         pos_rect, tex_rect, modulate_color
     )
 
-func draw_selected_item(x, y, anim_t):
+func draw_selected_anim_item(x, y, anim_t):
     var pos_x0 = sizes.pos_delta + x * sizes.segment
     var pos_y0 = sizes.pos_delta + y * sizes.segment
     var size_x0 = sizes.item_size
@@ -93,6 +93,19 @@ func draw_selected_item(x, y, anim_t):
     pos_rect.position.y = pos_y0 * (1.0 - anim_t) + pos_y1 * anim_t
     pos_rect.size.x = size_x0 * (1.0 - anim_t) + size_x1 * anim_t
     pos_rect.size.y = size_y0 * (1.0 - anim_t) + size_y1 * anim_t
+
+    # TODO: find out why texture edges looks stupid
+    tex_rect.position.x = sizes.img_part_w * x + 0.6
+    tex_rect.position.y = sizes.img_part_h * y + 0.6
+    tex_rect.size.x = sizes.img_part_w - 0.6
+    tex_rect.size.y = sizes.img_part_h - 0.6
+    draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
+
+func draw_selected_item(x, y):
+    pos_rect.position.x = 0
+    pos_rect.position.y = 0
+    pos_rect.size.x = 1
+    pos_rect.size.y = 1
 
     # TODO: find out why texture edges looks stupid
     tex_rect.position.x = sizes.img_part_w * x + 0.6
@@ -153,14 +166,14 @@ func process_click():
     current_state = TileState.SELECTED_ANIMATING
     update()
 
-    if not tween.interpolate_property(self, "selected_anim_t", 0.0, 1.0, 0.5):
+    if not tween.interpolate_property(self, "selected_anim_t", 0.0, 1.0, 0.25):
         print("Warning: tween does not work!")
     if not tween.start():
         print("Warning: tween does not work!")
-    foobar()
+    draw_tween_animation()
 
 
-func foobar():
+func draw_tween_animation():
     while true:
         var step_values = yield(tween, "tween_step")
         update()
