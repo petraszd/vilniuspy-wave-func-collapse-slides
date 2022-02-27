@@ -25,6 +25,8 @@ var idx: int
 var hovered: int = WFC.NO_INDEX
 var selected: int = WFC.NO_INDEX
 var current_state: int = TileState.INIT
+var availability_flags: Array = []
+var temp_comp_counters: PoolIntArray = PoolIntArray()
 
 var selected_anim_t: float = 0.0
 
@@ -38,6 +40,7 @@ func _ready():
     set_name("Tile %d" % idx)
     sizes = Sizes.new()
     fill_sizes_var()
+    fill_availability_flags()
 
 func _draw():
     var num_img_parts = WFCImageData.num_img_parts
@@ -49,7 +52,9 @@ func _draw():
 func draw_item(i, x, y):
     match current_state:
         TileState.INIT:
-            if hovered == i:
+            if not availability_flags[i]:
+                draw_small_item(x, y, Color(0.6, 0.6, 0.6, 0.5))  # TODO: to const
+            elif hovered == i:
                 draw_hover_indicator(x, y)
                 draw_small_item(x, y, Color(1, 1, 1, 0.75))  # TODO: to const
             else:
@@ -99,6 +104,7 @@ func draw_selected_anim_item(x, y, anim_t):
     tex_rect.position.y = sizes.img_part_h * y + 0.6
     tex_rect.size.x = sizes.img_part_w - 0.6
     tex_rect.size.y = sizes.img_part_h - 0.6
+    # TODO: modulate_color and availability_flags
     draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
 
 func draw_selected_item(x, y):
@@ -130,6 +136,11 @@ func fill_sizes_var():
     sizes.item_size = sizes.segment - inner_margin * 2 / num_img_parts
     sizes.hover_icon_len = sizes.segment * inner_margin
     sizes.pos_delta = outer_margin + (sizes.segment - sizes.item_size) * 0.5
+
+func fill_availability_flags():
+    for _i in range(WFCImageData.num_img_parts * WFCImageData.num_img_parts):
+        availability_flags.append(true)
+    temp_comp_counters.resize(len(availability_flags))
 
 func process_local_mouse_position(mouse_pos):
     if selected != WFC.NO_INDEX:
@@ -172,10 +183,50 @@ func process_click():
         print("Warning: tween does not work!")
     draw_tween_animation()
 
-
 func draw_tween_animation():
     while true:
         var step_values = yield(tween, "tween_step")
         update()
         if step_values[3] >= 1:
             break
+
+func mark_availability_flags(from_tile, direction, _depth):
+    if current_state != TileState.INIT:
+        return false
+    #if depth > 0:
+        #return false
+
+    var num_img_parts = WFCImageData.num_img_parts
+    var num_items = num_img_parts * num_img_parts
+    var comps = WFCImageData.compatibilities
+
+    var from_indexes = []
+    if from_tile.selected == WFC.NO_INDEX:
+        for i in range(len(from_tile.availability_flags)):
+            if from_tile.availability_flags[i]:
+                from_indexes.append(i)
+    else:
+        from_indexes.append(from_tile.selected)
+
+    for i in range(len(availability_flags)):
+        temp_comp_counters.set(i, 0)
+
+    for from_idx in from_indexes:
+        for to_idx in range(num_img_parts * num_img_parts):
+            var comp_idx = from_idx * num_items + to_idx  # TODO: WTF? Reverse of WFCCollapser
+            #var comp_idx = to_idx * num_items + from_idx
+            var comp = comps[comp_idx]
+            if comp & direction:
+                temp_comp_counters.set(to_idx, temp_comp_counters[to_idx] + 1)
+
+    var num_disabled = 0
+    for i in range(len(availability_flags)):
+        if temp_comp_counters[i] == 0:
+            if availability_flags[i]:
+                num_disabled += 1
+            availability_flags[i] = false
+
+    if num_disabled > 0:
+        update()
+        return true
+    return false

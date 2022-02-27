@@ -16,16 +16,16 @@ class ColorInfo:
         )
 
     func from_top_to_bottom(other):
-        return _from_dir0_to_dir1(self.top, other.bottom, WFC.Directions.FROM_TOP_TO_BOTTOM)
+        return _from_dir0_to_dir1(self.bottom, other.top, WFC.Directions.FROM_TOP_TO_BOTTOM)
 
     func from_bottom_to_top(other):
-        return _from_dir0_to_dir1(self.bottom, other.top, WFC.Directions.FROM_BOTTOM_TO_TOP)
+        return _from_dir0_to_dir1(self.top, other.bottom, WFC.Directions.FROM_BOTTOM_TO_TOP)
 
     func from_right_to_left(other):
-        return _from_dir0_to_dir1(self.right, other.left, WFC.Directions.FROM_RIGHT_TO_LEFT)
+        return _from_dir0_to_dir1(self.left, other.right, WFC.Directions.FROM_RIGHT_TO_LEFT)
 
     func from_left_to_right(other):
-        return _from_dir0_to_dir1(self.left, other.right, WFC.Directions.FROM_LEFT_TO_RIGHT)
+        return _from_dir0_to_dir1(self.right, other.left, WFC.Directions.FROM_LEFT_TO_RIGHT)
 
     func _from_dir0_to_dir1(dir0, dir1, positive_result):
         for i in range(len(dir0)):
@@ -40,6 +40,7 @@ export(Texture) var tiles_texture
 export(int) var num_img_parts = 1  # TODO: rename num_side_parts
 
 var img: Image
+var compatibilities: Array = []
 
 
 func _ready():
@@ -51,12 +52,8 @@ func _ready():
 
 func calculate_compatibilities():
     var color_infos = get_color_infos()
-    for info in color_infos:
-        print(info.top)
-
     var num_items = num_img_parts * num_img_parts  # TODO: rename after num_img_parts is renamed
     var num_compatibilities = num_items * num_items
-    var compatibilities = []
     compatibilities.resize(num_compatibilities)
 
     for y0 in range(num_img_parts):
@@ -69,9 +66,6 @@ func calculate_compatibilities():
                     compatibilities[comp_idx] = color_infos[from_idx].compatibility(
                         color_infos[to_idx]
                     )
-
-    print(compatibilities)
-
 
 func get_color_infos():
     var bytes: PoolByteArray = img.get_data()
