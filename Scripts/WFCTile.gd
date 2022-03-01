@@ -11,12 +11,22 @@ class Sizes:
     var pos_delta: float
 
 enum TileState {
-    INIT, SELECTED_ANIMATING, SELECTED
+    NOT_SELECTED,
+    SELECTED
+}
+
+enum AvailabilityFlag {
+    AVAILABLE = 0,
+    NOT_AVAILABLE_ANIM = 1,
+    NOT_AVAILABLE = 2,
 }
 
 
 const outer_margin = 0.02  # fraction
 const inner_margin = 0.05  # fraction
+const not_available_color = Color(0.6, 0.6, 0.8, 0.6)
+const hovered_color = Color(1.0, 1.0, 1.0, 0.75)
+const available_color = Color.white
 
 onready var tween: Tween = get_node("Tween")
 
@@ -24,11 +34,12 @@ var idx: int
 
 var hovered: int = WFC.NO_INDEX
 var selected: int = WFC.NO_INDEX
-var current_state: int = TileState.INIT
-var availability_flags: Array = []
-var temp_comp_counters: PoolIntArray = PoolIntArray()
+var current_state: int = TileState.NOT_SELECTED
+var availability_flags: PoolByteArray = PoolByteArray()
+var comp_counters: PoolIntArray = PoolIntArray()
 
 var selected_anim_t: float = 0.0
+var not_selected_anim_t: float = -1.0
 
 var hov_rect = Rect2()
 var pos_rect = Rect2()
@@ -41,6 +52,7 @@ func _ready():
     sizes = Sizes.new()
     fill_sizes_var()
     fill_availability_flags()
+    comp_counters.resize(len(availability_flags))
 
 func _draw():
     var num_img_parts = WFCImageData.num_img_parts
@@ -49,24 +61,33 @@ func _draw():
             var i = y * num_img_parts + x
             draw_item(i, x, y)
 
+func get_modulate_color(i):
+    if availability_flags[i] != AvailabilityFlag.AVAILABLE:
+        if availability_flags[i] == AvailabilityFlag.NOT_AVAILABLE_ANIM:
+            return not_available_color * not_selected_anim_t + available_color * (1.0 - not_selected_anim_t)
+        else:
+            return not_available_color
+    if i == hovered:
+        return hovered_color
+    return available_color
+
 func draw_item(i, x, y):
     match current_state:
-        TileState.INIT:
-            if not availability_flags[i]:
-                draw_small_item(x, y, Color(0.6, 0.6, 0.6, 0.5))  # TODO: to const
-            elif hovered == i:
+        TileState.NOT_SELECTED:
+            if hovered == i:
                 draw_hover_indicator(x, y)
-                draw_small_item(x, y, Color(1, 1, 1, 0.75))  # TODO: to const
-            else:
-                draw_small_item(x, y, Color.white)
-        TileState.SELECTED_ANIMATING:
-            if selected == i:
-                draw_selected_anim_item(x, y, selected_anim_t)
-            else:
-                draw_small_item(x, y, Color(1, 1, 1, 1.0 - selected_anim_t))
+            draw_small_item(x, y, get_modulate_color(i))
         TileState.SELECTED:
-            if selected == i:
-                draw_selected_item(x, y)
+            if selected_anim_t < 0.0:
+                if selected == i:
+                    draw_selected_item(x, y)
+            else:
+                if selected == i:
+                    draw_selected_anim_item(x, y, selected_anim_t)
+                else:
+                    var color = get_modulate_color(i)
+                    color.a = color.a * (1.0 - selected_anim_t)
+                    draw_small_item(x, y, color)
 
 func draw_small_item(x, y, modulate_color):
     pos_rect.position.x = sizes.pos_delta + x * sizes.segment
@@ -104,7 +125,6 @@ func draw_selected_anim_item(x, y, anim_t):
     tex_rect.position.y = sizes.img_part_h * y + 0.6
     tex_rect.size.x = sizes.img_part_w - 0.6
     tex_rect.size.y = sizes.img_part_h - 0.6
-    # TODO: modulate_color and availability_flags
     draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
 
 func draw_selected_item(x, y):
@@ -125,7 +145,7 @@ func draw_hover_indicator(x, y):
     hov_rect.position.y = sizes.pos_delta + y * sizes.segment - sizes.hover_icon_len
     hov_rect.size.x = sizes.item_size + sizes.hover_icon_len * 2
     hov_rect.size.y = sizes.item_size + sizes.hover_icon_len * 2
-    draw_rect(hov_rect, Color(1, 1, 1, 1))
+    draw_rect(hov_rect, Color.white)
 
 func fill_sizes_var():
     var num_img_parts = WFCImageData.num_img_parts
@@ -138,9 +158,10 @@ func fill_sizes_var():
     sizes.pos_delta = outer_margin + (sizes.segment - sizes.item_size) * 0.5
 
 func fill_availability_flags():
-    for _i in range(WFCImageData.num_img_parts * WFCImageData.num_img_parts):
-        availability_flags.append(true)
-    temp_comp_counters.resize(len(availability_flags))
+    var n = WFCImageData.num_img_parts * WFCImageData.num_img_parts
+    availability_flags.resize(n)
+    for i in range(n):
+        availability_flags.set(i, AvailabilityFlag.AVAILABLE)
 
 func process_local_mouse_position(mouse_pos):
     if selected != WFC.NO_INDEX:
@@ -160,7 +181,12 @@ func process_local_mouse_position(mouse_pos):
         var int_x = int((mouse_pos.x - outer_margin) / segment)
         var int_y = int((mouse_pos.y - outer_margin) / segment)
 
-        hovered = int_y * num_img_parts + int_x
+        var i = int_y * num_img_parts + int_x
+
+        if availability_flags[i] == AvailabilityFlag.AVAILABLE:
+            hovered = i
+        else:
+            hovered = WFC.NO_INDEX
 
     update()
     return hovered != WFC.NO_INDEX
@@ -171,30 +197,31 @@ func remove_hovered_if_needed():
         update()
 
 func process_click():
-    # TODO: continue
     selected = hovered
     hovered = WFC.NO_INDEX
-    current_state = TileState.SELECTED_ANIMATING
+    current_state = TileState.SELECTED
     update()
 
-    if not tween.interpolate_property(self, "selected_anim_t", 0.0, 1.0, 0.25):
-        print("Warning: tween does not work!")
-    if not tween.start():
-        print("Warning: tween does not work!")
-    draw_tween_animation()
+    if (
+        tween.interpolate_property(
+            self, "selected_anim_t",
+            0.0, 1.0, 0.25
+        ) and
+        tween.start()
+    ):
+        draw_selected_tween_animation()
 
-func draw_tween_animation():
+func draw_selected_tween_animation():
     while true:
         var step_values = yield(tween, "tween_step")
         update()
         if step_values[3] >= 1:
+            selected_anim_t = -1.0
             break
 
-func mark_availability_flags(from_tile, direction, _depth):
-    if current_state != TileState.INIT:
+func mark_availability_flags(from_tile, direction):
+    if selected != WFC.NO_INDEX:
         return false
-    #if depth > 0:
-        #return false
 
     var num_img_parts = WFCImageData.num_img_parts
     var num_items = num_img_parts * num_img_parts
@@ -203,30 +230,47 @@ func mark_availability_flags(from_tile, direction, _depth):
     var from_indexes = []
     if from_tile.selected == WFC.NO_INDEX:
         for i in range(len(from_tile.availability_flags)):
-            if from_tile.availability_flags[i]:
+            if from_tile.availability_flags[i] == AvailabilityFlag.AVAILABLE:
                 from_indexes.append(i)
     else:
         from_indexes.append(from_tile.selected)
 
     for i in range(len(availability_flags)):
-        temp_comp_counters.set(i, 0)
+        comp_counters.set(i, 0)
 
     for from_idx in from_indexes:
         for to_idx in range(num_img_parts * num_img_parts):
-            var comp_idx = from_idx * num_items + to_idx  # TODO: WTF? Reverse of WFCCollapser
-            #var comp_idx = to_idx * num_items + from_idx
+            var comp_idx = from_idx * num_items + to_idx
             var comp = comps[comp_idx]
             if comp & direction:
-                temp_comp_counters.set(to_idx, temp_comp_counters[to_idx] + 1)
+                comp_counters.set(to_idx, comp_counters[to_idx] + 1)
 
     var num_disabled = 0
     for i in range(len(availability_flags)):
-        if temp_comp_counters[i] == 0:
-            if availability_flags[i]:
+        if comp_counters[i] == 0:
+            if availability_flags[i] == AvailabilityFlag.AVAILABLE:
                 num_disabled += 1
-            availability_flags[i] = false
+                availability_flags.set(i, AvailabilityFlag.NOT_AVAILABLE_ANIM)
 
     if num_disabled > 0:
         update()
+        not_selected_anim_t = 0
+        if tween.interpolate_property(
+            self, "not_selected_anim_t", 0.0, 1.0, 0.25,
+            Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
+        ) and tween.start():
+            draw_not_selected_tween_animation()
+
         return true
     return false
+
+func draw_not_selected_tween_animation():
+    while true:
+        var step_values = yield(tween, "tween_step")
+        update()
+        if step_values[3] >= 1:
+            not_selected_anim_t = -1.0
+            for i in range(len(availability_flags)):
+                if availability_flags[i] == AvailabilityFlag.NOT_AVAILABLE_ANIM:
+                    availability_flags.set(i, AvailabilityFlag.NOT_AVAILABLE)
+            break

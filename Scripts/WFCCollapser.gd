@@ -54,7 +54,7 @@ func cleanup_hovered_from_all_tiles(hovered_idx):
         if i != hovered_idx:
             tiles[i].remove_hovered_if_needed()
 
-func recursively_update_availability_flags(tile_idx, depth = 0):
+func recursively_update_availability_flags(tile_idx):
     var tile = tiles[tile_idx]
     var x0 = tile_idx % num_cols
     var y0 = tile_idx / num_cols
@@ -62,23 +62,23 @@ func recursively_update_availability_flags(tile_idx, depth = 0):
     if y0 < num_rows - 1:
         var to_bottom_idx = (y0 + 1) * num_cols + x0
         var dir = WFC.Directions.FROM_TOP_TO_BOTTOM
-        if tiles[to_bottom_idx].mark_availability_flags(tile, dir, depth):
-            recursively_update_availability_flags(to_bottom_idx, depth + 1)
+        if tiles[to_bottom_idx].mark_availability_flags(tile, dir):
+            recursively_update_availability_flags(to_bottom_idx)
     if y0 > 0:
         var to_top_idx = (y0 - 1) * num_cols + x0
         var dir = WFC.Directions.FROM_BOTTOM_TO_TOP
-        if tiles[to_top_idx].mark_availability_flags(tile, dir, depth):
-            recursively_update_availability_flags(to_top_idx, depth + 1)
+        if tiles[to_top_idx].mark_availability_flags(tile, dir):
+            recursively_update_availability_flags(to_top_idx)
     if x0 > 0:
         var to_left_idx = y0 * num_cols + x0 - 1
         var dir = WFC.Directions.FROM_RIGHT_TO_LEFT
-        if tiles[to_left_idx].mark_availability_flags(tile, dir, depth):
-            recursively_update_availability_flags(to_left_idx, depth + 1)
+        if tiles[to_left_idx].mark_availability_flags(tile, dir):
+            recursively_update_availability_flags(to_left_idx)
     if x0 < num_cols - 1:
         var to_right_idx = y0 * num_cols + x0 + 1
         var dir = WFC.Directions.FROM_LEFT_TO_RIGHT
-        if tiles[to_right_idx].mark_availability_flags(tile, dir, depth):
-            recursively_update_availability_flags(to_right_idx, depth + 1)
+        if tiles[to_right_idx].mark_availability_flags(tile, dir):
+            recursively_update_availability_flags(to_right_idx)
 
 func generate_tiles():
     for y in range(num_rows):
