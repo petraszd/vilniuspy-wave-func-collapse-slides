@@ -29,6 +29,9 @@ func _process(_delta):
         tiles[hovered_idx].process_click()
         recursively_update_availability_flags(hovered_idx)
 
+func _on_resized():
+    rescale_groups_wrapper()
+
 func process_mouse_position():
     var result = WFC.NO_INDEX
     var mouse_pos = $Groups.get_local_mouse_position()
