@@ -30,6 +30,7 @@ anchor_bottom = 0.0
 margin_left = 514.0
 margin_right = 2048.0
 margin_bottom = 1200.0
+padding = 20
 num_cols = 5
 num_rows = 3
 

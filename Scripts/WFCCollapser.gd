@@ -11,6 +11,8 @@ var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
 var is_mouse_pressed: bool = false
 
+onready var image_data: WFCImageData = get_node("ImageData")
+
 
 func _ready():
     assert(num_cols > 0)
@@ -84,6 +86,7 @@ func generate_tiles():
     for y in range(num_rows):
         for x in range(num_cols):
             var tile = tile_scene.instance()
+            tile.image_data = image_data
             tile.idx = y * num_cols + x
             $Groups.add_child(tile)
             tile.position.x = x

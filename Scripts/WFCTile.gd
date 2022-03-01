@@ -29,6 +29,7 @@ const hovered_color = Color(1.0, 1.0, 1.0, 0.75)
 const available_color = Color.white
 
 onready var tween: Tween = get_node("Tween")
+var image_data: WFCImageData = null
 
 var idx: int
 
@@ -55,7 +56,7 @@ func _ready():
     comp_counters.resize(len(availability_flags))
 
 func _draw():
-    var num_img_parts = WFCImageData.num_img_parts
+    var num_img_parts = image_data.num_img_parts
     for y in range(num_img_parts):
         for x in range(num_img_parts):
             var i = y * num_img_parts + x
@@ -100,7 +101,7 @@ func draw_small_item(x, y, modulate_color):
     tex_rect.size.x = sizes.img_part_w
     tex_rect.size.y = sizes.img_part_h
     draw_texture_rect_region(
-        WFCImageData.tiles_texture,
+        image_data.tiles_texture,
         pos_rect, tex_rect, modulate_color
     )
 
@@ -125,7 +126,7 @@ func draw_selected_anim_item(x, y, anim_t):
     tex_rect.position.y = sizes.img_part_h * y + 0.6
     tex_rect.size.x = sizes.img_part_w - 0.6
     tex_rect.size.y = sizes.img_part_h - 0.6
-    draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
+    draw_texture_rect_region(image_data.tiles_texture, pos_rect, tex_rect)
 
 func draw_selected_item(x, y):
     pos_rect.position.x = 0
@@ -138,7 +139,7 @@ func draw_selected_item(x, y):
     tex_rect.position.y = sizes.img_part_h * y + 0.6
     tex_rect.size.x = sizes.img_part_w - 0.6
     tex_rect.size.y = sizes.img_part_h - 0.6
-    draw_texture_rect_region(WFCImageData.tiles_texture, pos_rect, tex_rect)
+    draw_texture_rect_region(image_data.tiles_texture, pos_rect, tex_rect)
 
 func draw_hover_indicator(x, y):
     hov_rect.position.x = sizes.pos_delta + x * sizes.segment - sizes.hover_icon_len
@@ -148,17 +149,17 @@ func draw_hover_indicator(x, y):
     draw_rect(hov_rect, Color.white)
 
 func fill_sizes_var():
-    var num_img_parts = WFCImageData.num_img_parts
+    var num_img_parts = image_data.num_img_parts
 
     sizes.segment = (1.0 - outer_margin * 2) / num_img_parts
-    sizes.img_part_w = WFCImageData.img.get_width() / num_img_parts
-    sizes.img_part_h = WFCImageData.img.get_height() / num_img_parts
+    sizes.img_part_w = image_data.img.get_width() / num_img_parts
+    sizes.img_part_h = image_data.img.get_height() / num_img_parts
     sizes.item_size = sizes.segment - inner_margin * 2 / num_img_parts
     sizes.hover_icon_len = sizes.segment * inner_margin
     sizes.pos_delta = outer_margin + (sizes.segment - sizes.item_size) * 0.5
 
 func fill_availability_flags():
-    var n = WFCImageData.num_img_parts * WFCImageData.num_img_parts
+    var n = image_data.num_img_parts * image_data.num_img_parts
     availability_flags.resize(n)
     for i in range(n):
         availability_flags.set(i, AvailabilityFlag.AVAILABLE)
@@ -175,7 +176,7 @@ func process_local_mouse_position(mouse_pos):
     ):
         hovered = WFC.NO_INDEX
     else:
-        var num_img_parts = WFCImageData.num_img_parts
+        var num_img_parts = image_data.num_img_parts
         var segment = (1.0 - outer_margin * 2) / num_img_parts
 
         var int_x = int((mouse_pos.x - outer_margin) / segment)
@@ -223,9 +224,9 @@ func mark_availability_flags(from_tile, direction):
     if selected != WFC.NO_INDEX:
         return false
 
-    var num_img_parts = WFCImageData.num_img_parts
+    var num_img_parts = image_data.num_img_parts
     var num_items = num_img_parts * num_img_parts
-    var comps = WFCImageData.compatibilities
+    var comps = image_data.compatibilities
 
     var from_indexes = []
     if from_tile.selected == WFC.NO_INDEX:

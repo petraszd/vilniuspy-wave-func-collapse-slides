@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scripts/WFCCollapser.gd"
 }, {
+"base": "Node",
+"class": "WFCImageData",
+"language": "GDScript",
+"path": "res://Scripts/WFCImageData.gd"
+}, {
 "base": "Node2D",
 "class": "WFCTile",
 "language": "GDScript",
@@ -21,6 +26,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "WFCCollapser": "",
+"WFCImageData": "",
 "WFCTile": ""
 }
 
@@ -33,7 +39,6 @@ config/icon="res://icon.png"
 [autoload]
 
 WFC="*res://Scripts/WFC.gd"
-WFCImageData="*res://Scenes/WFCImageData.tscn"
 
 [display]
 
@@ -53,4 +58,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+2d/options/use_software_skinning=false
 environment/default_environment="res://default_env.tres"

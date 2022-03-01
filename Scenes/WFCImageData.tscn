@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=2]
-
-[ext_resource path="res://Scripts/WFCImageData.gd" type="Script" id=1]
-[ext_resource path="res://Textures/Tiles.png" type="Texture" id=2]
-
-[node name="WFCImageData" type="Node"]
-script = ExtResource( 1 )
-tiles_texture = ExtResource( 2 )
-num_img_parts = 4
