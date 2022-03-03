@@ -129,3 +129,10 @@ func rescale_groups_wrapper():
 
     $Groups.position.x = x_delta
     $Groups.position.y = y_delta
+
+func restore_state():
+    for tile in tiles:
+        tile.restore_state()
+
+func _on_ResetButton_pressed():
+    restore_state()

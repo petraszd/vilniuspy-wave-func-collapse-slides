@@ -43,7 +43,7 @@ var availability_flags: PoolByteArray = PoolByteArray()
 
 # Anim helpers
 var selected_anim_t: float = 0.0
-var not_selected_anim_t: float = -1.0
+var not_selected_anim_t: float = 0.0
 
 # Temp vars
 var hov_rect = Rect2()
@@ -169,6 +169,14 @@ func fill_availability_flags():
     for i in range(n):
         availability_flags.set(i, AvailabilityFlag.AVAILABLE)
 
+func restore_state():
+    hovered = WFC.NO_INDEX
+    selected = WFC.NO_INDEX
+    current_state = TileState.NOT_SELECTED
+    for i in range(len(availability_flags)):
+        availability_flags.set(i, AvailabilityFlag.AVAILABLE)
+    update()
+
 func process_local_mouse_position(mouse_pos):
     if selected != WFC.NO_INDEX:
         return false
@@ -211,6 +219,7 @@ func process_click():
     current_state = TileState.SELECTED
     update()
 
+    selected_anim_t = 0.0
     if (
         tween.interpolate_property(
             self, "selected_anim_t",
@@ -263,7 +272,7 @@ func mark_availability_flags(from_tile, direction):
 
     if num_disabled > 0:
         update()
-        not_selected_anim_t = 0
+        not_selected_anim_t = 0.0
         if tween.interpolate_property(
             self, "not_selected_anim_t", 0.0, 1.0, 0.25,
             Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
