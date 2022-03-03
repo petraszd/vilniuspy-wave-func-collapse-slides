@@ -6,6 +6,7 @@ export(int) var padding = 20
 
 export(int) var num_cols = 1
 export(int) var num_rows = 1
+export(bool) var allow_select_unavailable = false
 
 var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
@@ -91,6 +92,7 @@ func generate_tiles():
             var tile = tile_scene.instance()
             tile.image_data = image_data
             tile.idx = y * num_cols + x
+            tile.allow_select_unavailable = allow_select_unavailable
             $Groups.add_child(tile)
             tile.position.x = x
             tile.position.y = y

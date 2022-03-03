@@ -29,23 +29,28 @@ const hovered_color = Color(1.0, 1.0, 1.0, 0.75)
 const available_color = Color.white
 
 onready var tween: Tween = get_node("Tween")
+
+# Assigned by collapser
 var image_data: WFCImageData = null
-
 var idx: int
+var allow_select_unavailable: bool
 
+# Logic
 var hovered: int = WFC.NO_INDEX
 var selected: int = WFC.NO_INDEX
 var current_state: int = TileState.NOT_SELECTED
 var availability_flags: PoolByteArray = PoolByteArray()
-var comp_counters: PoolIntArray = PoolIntArray()
 
+# Anim helpers
 var selected_anim_t: float = 0.0
 var not_selected_anim_t: float = -1.0
 
+# Temp vars
 var hov_rect = Rect2()
 var pos_rect = Rect2()
 var tex_rect = Rect2()
 var sizes: Sizes
+var comp_counters: PoolIntArray = PoolIntArray()
 
 
 func _ready():
@@ -184,7 +189,10 @@ func process_local_mouse_position(mouse_pos):
 
         var i = int_y * num_img_parts + int_x
 
-        if availability_flags[i] == AvailabilityFlag.AVAILABLE:
+        if (
+            allow_select_unavailable or
+            availability_flags[i] == AvailabilityFlag.AVAILABLE
+        ):
             hovered = i
         else:
             hovered = WFC.NO_INDEX
