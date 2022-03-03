@@ -8,3 +8,7 @@ enum Directions {
     FROM_RIGHT_TO_LEFT = 4,
     FROM_LEFT_TO_RIGHT = 8,
 }
+
+func _ready():
+    # GLOBAL: ready
+    randomize()

@@ -37,8 +37,21 @@ margin_bottom = 1160.0
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/MarginContainer/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 426.0
-margin_bottom = 1075.0
+margin_bottom = 1002.0
 size_flags_vertical = 3
+
+[node name="GenerateButton" type="Button" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+margin_top = 1010.0
+margin_right = 426.0
+margin_bottom = 1047.0
+text = "Generate"
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 1055.0
+margin_right = 426.0
+margin_bottom = 1075.0
+custom_constants/separation = 20
 
 [node name="ResetButton" type="Button" parent="HBoxContainer/MarginContainer/VBoxContainer"]
 margin_top = 1083.0
@@ -62,4 +75,5 @@ margin_left = 1175.0
 margin_right = 2048.0
 margin_bottom = 1200.0
 
+[connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer/GenerateButton" to="HBoxContainer/WFCCollapser" method="_on_GenerateButton_pressed"]
 [connection signal="pressed" from="HBoxContainer/MarginContainer/VBoxContainer/ResetButton" to="HBoxContainer/WFCCollapser" method="_on_ResetButton_pressed"]

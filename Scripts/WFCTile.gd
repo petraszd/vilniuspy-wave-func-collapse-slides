@@ -213,9 +213,8 @@ func remove_hovered_if_needed():
         hovered = WFC.NO_INDEX
         update()
 
-func process_click():
-    selected = hovered
-    hovered = WFC.NO_INDEX
+func select_item(i):
+    selected = i
     current_state = TileState.SELECTED
     update()
 
@@ -228,6 +227,10 @@ func process_click():
         tween.start()
     ):
         draw_selected_tween_animation()
+
+func process_click():
+    select_item(hovered)
+    hovered = WFC.NO_INDEX
 
 func draw_selected_tween_animation():
     while true:
@@ -292,3 +295,22 @@ func draw_not_selected_tween_animation():
                 if availability_flags[i] == AvailabilityFlag.NOT_AVAILABLE_ANIM:
                     availability_flags.set(i, AvailabilityFlag.NOT_AVAILABLE)
             break
+
+func get_number_of_available_items():
+    if selected != WFC.NO_INDEX:
+        return 0
+
+    var result = 0
+    for flag in availability_flags:
+        if flag == AvailabilityFlag.AVAILABLE:
+            result += 1
+    return result
+
+func select_random_available_item():
+    var indexes = []
+    for i in range(len(availability_flags)):
+        if availability_flags[i] == AvailabilityFlag.AVAILABLE:
+            indexes.append(i)
+    assert(len(indexes) > 0)
+
+    select_item(indexes[randi() % len(indexes)])

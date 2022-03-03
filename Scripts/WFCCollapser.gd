@@ -134,5 +134,27 @@ func restore_state():
     for tile in tiles:
         tile.restore_state()
 
+func generate():
+    while true:
+        var max_num_available = 0
+        var indexes_with_max = []
+        for i in range(len(tiles)):
+            var num = tiles[i].get_number_of_available_items()
+            if num > max_num_available:
+                indexes_with_max = [i]
+                max_num_available = num
+            elif num == max_num_available and num > 0:
+                indexes_with_max.append(i)
+
+        if max_num_available == 0:
+            break
+
+        var tile_idx = indexes_with_max[randi() % len(indexes_with_max)]
+        tiles[tile_idx].select_random_available_item()
+        recursively_update_availability_flags(tile_idx)
+
 func _on_ResetButton_pressed():
     restore_state()
+
+func _on_GenerateButton_pressed():
+    generate()
