@@ -7,6 +7,7 @@ export(int) var padding = 20
 export(int) var num_cols = 1
 export(int) var num_rows = 1
 export(bool) var allow_select_unavailable = false
+export(bool) var is_instant_generation = true
 
 var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
@@ -148,6 +149,9 @@ func generate():
 
         if max_num_available == 0:
             break
+
+        if not is_instant_generation:
+            yield(get_tree().create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
 
         var tile_idx = indexes_with_max[randi() % len(indexes_with_max)]
         tiles[tile_idx].select_random_available_item()

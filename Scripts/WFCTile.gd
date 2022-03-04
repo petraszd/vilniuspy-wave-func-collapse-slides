@@ -27,6 +27,7 @@ const inner_margin = 0.05  # fraction
 const not_available_color = Color(0.6, 0.6, 0.8, 0.6)
 const hovered_color = Color(1.0, 1.0, 1.0, 0.75)
 const available_color = Color.white
+const texture_epsilon = 0.05
 
 onready var tween: Tween = get_node("Tween")
 
@@ -126,11 +127,10 @@ func draw_selected_anim_item(x, y, anim_t):
     pos_rect.size.x = size_x0 * (1.0 - anim_t) + size_x1 * anim_t
     pos_rect.size.y = size_y0 * (1.0 - anim_t) + size_y1 * anim_t
 
-    # TODO: find out why texture edges looks stupid
-    tex_rect.position.x = sizes.img_part_w * x + 0.6
-    tex_rect.position.y = sizes.img_part_h * y + 0.6
-    tex_rect.size.x = sizes.img_part_w - 0.6
-    tex_rect.size.y = sizes.img_part_h - 0.6
+    tex_rect.position.x = sizes.img_part_w * x + texture_epsilon
+    tex_rect.position.y = sizes.img_part_h * y + texture_epsilon
+    tex_rect.size.x = sizes.img_part_w - texture_epsilon
+    tex_rect.size.y = sizes.img_part_h - texture_epsilon
     draw_texture_rect_region(image_data.tiles_texture, pos_rect, tex_rect)
 
 func draw_selected_item(x, y):
@@ -139,11 +139,10 @@ func draw_selected_item(x, y):
     pos_rect.size.x = 1
     pos_rect.size.y = 1
 
-    # TODO: find out why texture edges looks stupid
-    tex_rect.position.x = sizes.img_part_w * x + 0.6
-    tex_rect.position.y = sizes.img_part_h * y + 0.6
-    tex_rect.size.x = sizes.img_part_w - 0.6
-    tex_rect.size.y = sizes.img_part_h - 0.6
+    tex_rect.position.x = sizes.img_part_w * x + texture_epsilon
+    tex_rect.position.y = sizes.img_part_h * y + texture_epsilon
+    tex_rect.size.x = sizes.img_part_w - texture_epsilon
+    tex_rect.size.y = sizes.img_part_h - texture_epsilon
     draw_texture_rect_region(image_data.tiles_texture, pos_rect, tex_rect)
 
 func draw_hover_indicator(x, y):
@@ -222,7 +221,7 @@ func select_item(i):
     if (
         tween.interpolate_property(
             self, "selected_anim_t",
-            0.0, 1.0, 0.25
+            0.0, 1.0, WFC.TRANSITION_ANIM_SPEED
         ) and
         tween.start()
     ):
@@ -277,7 +276,7 @@ func mark_availability_flags(from_tile, direction):
         update()
         not_selected_anim_t = 0.0
         if tween.interpolate_property(
-            self, "not_selected_anim_t", 0.0, 1.0, 0.25,
+            self, "not_selected_anim_t", 0.0, 1.0, WFC.TRANSITION_ANIM_SPEED,
             Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
         ) and tween.start():
             draw_not_selected_tween_animation()

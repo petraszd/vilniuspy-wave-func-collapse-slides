@@ -9,6 +9,8 @@ enum Directions {
     FROM_LEFT_TO_RIGHT = 8,
 }
 
+const TRANSITION_ANIM_SPEED = 0.25
+
 func _ready():
     # GLOBAL: ready
     randomize()
