@@ -2,8 +2,10 @@ class_name WFCCollapser
 extends Control
 
 
-export(int) var padding = 20
+signal tiles_state_changed(tiles, num_cols, num_rows)
 
+
+export(int) var padding = 20
 export(int) var num_cols = 1
 export(int) var num_rows = 1
 export(bool) var allow_select_unavailable = false
@@ -14,6 +16,9 @@ var tiles = []
 var is_mouse_pressed: bool = false
 
 onready var image_data: WFCImageData = get_node("ImageData")
+onready var groups: Node2D = get_node("Wrapper/Groups")
+onready var wrapper: Node2D = get_node("Wrapper")
+onready var tile_errors: Node2D = get_node("Wrapper/TileErrors")
 
 
 func _ready():
@@ -21,6 +26,9 @@ func _ready():
     assert(num_rows > 0)
     generate_tiles()
     rescale_groups_wrapper()
+
+    tile_errors.image_data = image_data
+    assert(connect("tiles_state_changed", tile_errors, "_on_tiles_state_changed", [tiles, num_cols, num_rows]) == 0)
 
 func _process(_delta):
     var prev_is_mouse_pressed = is_mouse_pressed
@@ -30,13 +38,14 @@ func _process(_delta):
     if hovered_idx != WFC.NO_INDEX and not is_mouse_pressed and prev_is_mouse_pressed:
         tiles[hovered_idx].process_click()
         recursively_update_availability_flags(hovered_idx)
+        emit_signal("tiles_state_changed")
 
 func _on_resized():
     rescale_groups_wrapper()
 
 func process_mouse_position():
     var result = WFC.NO_INDEX
-    var mouse_pos = $Groups.get_local_mouse_position()
+    var mouse_pos = groups.get_local_mouse_position()
     if (
         mouse_pos.x > 0.0 and
         mouse_pos.y > 0.0 and
@@ -94,7 +103,7 @@ func generate_tiles():
             tile.image_data = image_data
             tile.idx = y * num_cols + x
             tile.allow_select_unavailable = allow_select_unavailable
-            $Groups.add_child(tile)
+            groups.add_child(tile)
             tile.position.x = x
             tile.position.y = y
             tiles.append(tile)
@@ -125,15 +134,16 @@ func rescale_groups_wrapper():
     elif y_ratio < x_ratio:
         x_delta += (screen_x - num_cols * ratio) * 0.5
 
-    $Groups.scale.x = ratio
-    $Groups.scale.y = ratio
+    wrapper.scale.x = ratio
+    wrapper.scale.y = ratio
 
-    $Groups.position.x = x_delta
-    $Groups.position.y = y_delta
+    wrapper.position.x = x_delta
+    wrapper.position.y = y_delta
 
 func restore_state():
     for tile in tiles:
         tile.restore_state()
+    emit_signal("tiles_state_changed")
 
 func generate():
     while true:
@@ -156,6 +166,7 @@ func generate():
         var tile_idx = indexes_with_max[randi() % len(indexes_with_max)]
         tiles[tile_idx].select_random_available_item()
         recursively_update_availability_flags(tile_idx)
+        emit_signal("tiles_state_changed")
 
 func _on_ResetButton_pressed():
     restore_state()

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scripts/WFCCollapser.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/WFCImageData.gd" type="Script" id=2]
 [ext_resource path="res://Textures/Tiles.png" type="Texture" id=3]
+[ext_resource path="res://Scripts/WFCTileErrors.gd" type="Script" id=4]
 
 [node name="WFCCollapser" type="Control"]
 anchor_right = 1.0
@@ -15,6 +16,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ImageData" type="Node" parent="."]
+script = ExtResource( 2 )
+tiles_texture = ExtResource( 3 )
+num_img_parts = 4
+
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,11 +29,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Groups" type="Node2D" parent="."]
+[node name="Wrapper" type="Node2D" parent="."]
 
-[node name="ImageData" type="Node" parent="."]
-script = ExtResource( 2 )
-tiles_texture = ExtResource( 3 )
-num_img_parts = 4
+[node name="Groups" type="Node2D" parent="Wrapper"]
+
+[node name="TileErrors" type="Node2D" parent="Wrapper"]
+script = ExtResource( 4 )
 
 [connection signal="resized" from="." to="." method="_on_resized"]

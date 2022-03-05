@@ -67,6 +67,7 @@ margin_right = 2048.0
 margin_bottom = 1200.0
 num_cols = 5
 num_rows = 3
+allow_select_unavailable = true
 
 [node name="DisplayFPS" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
