@@ -3,5 +3,6 @@
 export_presets.cfg
 .mono/*
 PythonRunner/.cache/
+PythonRunner/*.os
 PythonRunner/compile_commands.json
 NativeLibs/PythonRunner.dylib

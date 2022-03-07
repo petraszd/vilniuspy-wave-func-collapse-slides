@@ -69,14 +69,9 @@ void GDN_EXPORT godot_nativescript_init(void* p_handle)
             atts, get_foobar);
 }
 
-typedef struct user_data_struct {
-    int some_item;
-} user_data_struct;
-
 void* prunner_constructor(godot_object* p_instance, void* p_method_data)
 {
-    user_data_struct *user_data = api->godot_alloc(sizeof(user_data_struct));
-    return user_data;
+    return NULL;
 }
 
 void prunner_destructor(godot_object* p_instance, void* p_method_data, void* p_user_data)
