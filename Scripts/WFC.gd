@@ -1,5 +1,9 @@
 extends Node
 
+
+onready var PRunner = preload("res://NativeScripts/PythonRunner.gdns").new()
+
+
 var NO_INDEX = -1
 
 enum Directions {

@@ -2,3 +2,6 @@
 *.translation
 export_presets.cfg
 .mono/*
+PythonRunner/.cache/
+PythonRunner/compile_commands.json
+NativeLibs/PythonRunner.dylib
