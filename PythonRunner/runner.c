@@ -1,6 +1,7 @@
 #include <gdnative_api_struct.gen.h>
 
 #include <string.h>
+#include "pythonside.h"
 
 #define GD_DEBUG(p_str) {                            \
     const char* p_str2 = (p_str);                    \
@@ -71,14 +72,21 @@ void GDN_EXPORT godot_nativescript_init(void* p_handle)
 
 void* prunner_constructor(godot_object* p_instance, void* p_method_data)
 {
+    // TODO: return user_data
     return NULL;
 }
 
 void prunner_destructor(godot_object* p_instance, void* p_method_data, void* p_user_data)
 {
-    // TODO
+    // TODO: clean user_data
 }
 
+void my_callback(const char* stdout_write_arg)
+{
+    GD_DEBUG(stdout_write_arg);
+}
+
+// TODO: rename
 godot_variant prunner_get_foobar(
         godot_object* p_instance,
         void* p_method_data,
@@ -86,7 +94,14 @@ godot_variant prunner_get_foobar(
         int p_num_args,
         godot_variant** p_args)
 {
-    GD_DEBUG("Hello Macro")
+    GD_DEBUG("-- MACRO: Start --");
+
+    if (pside_run_code(&my_callback) != 0) {
+        GD_DEBUG("ERROR: while running Python code");
+    }
+
+    GD_DEBUG("-- MACRO: EnD --");
+
     godot_variant ret;
     api->godot_variant_new_nil(&ret);
     return ret;

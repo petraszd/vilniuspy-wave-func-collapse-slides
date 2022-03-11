@@ -173,4 +173,3 @@ func _on_ResetButton_pressed():
 
 func _on_GenerateButton_pressed():
     generate()
-    WFC.PRunner.get_foobar()  # TODO: remove
