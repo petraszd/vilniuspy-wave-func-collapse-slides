@@ -1,6 +1,7 @@
 #include <gdnative_api_struct.gen.h>
 
 #include <string.h>
+#include <assert.h>
 #include "gdnative/array.h"
 #include "pythonside.h"
 
@@ -119,7 +120,31 @@ void prunner_stderr_callback(void* p_user_data, const char* p_stderr_str)
     api->godot_string_destroy(&str);
 }
 
-// TODO: rename
+void prunner_result_callback(void* p_user_data, int* compatibilities, int num_compatibilities)
+{
+    char temp[1024];
+    sprintf(temp, "callback got = %d", num_compatibilities);
+    GD_DEBUG(temp);
+}
+
+void prunner_extract_function_args(
+        int p_num_args,
+        godot_variant** p_args,
+        function_args_t* function_args)
+{
+    assert(p_num_args == 4);
+
+    function_args->num_cols = (int)(api->godot_variant_as_int(p_args[0]));
+    function_args->num_rows = (int)(api->godot_variant_as_int(p_args[1]));
+    function_args->num_image_fragments = (int)(api->godot_variant_as_int(p_args[2]));
+
+    godot_array array = api->godot_variant_as_array(p_args[3]);
+    function_args->num_compatibilities = (int)(api->godot_array_size(&array));
+    // TODO: push compatibilities
+
+    api->godot_array_destroy(&array);
+}
+
 godot_variant prunner_run(
         godot_object* p_instance,
         void* p_method_data,
@@ -129,17 +154,27 @@ godot_variant prunner_run(
 {
     GD_DEBUG("-- MACRO: Start --");
 
+    char temp[1024];
+    sprintf(temp, "%d", p_num_args); // TODO: extract args
+    GD_DEBUG(temp);
+
     prunner_user_data_t* user_data = p_user_data;
-    // TOOD: clear stdout, and stderr
+    api->godot_pool_string_array_resize(&user_data->python_stdout, 0);
+    api->godot_pool_string_array_resize(&user_data->python_stderr, 0);
+    // TODO: make sure it is enough to free memory
+
+    function_args_t function_args;
+    prunner_extract_function_args(p_num_args, p_args, &function_args);
 
     if (pside_run_code(
                 p_user_data,
                 &prunner_stdout_callback,
-                &prunner_stderr_callback) != 0)
+                &prunner_stderr_callback,
+                &prunner_result_callback,
+                &function_args) != 0)
     {
         GD_DEBUG("ERROR: while running Python code");
     }
-    GD_DEBUG("-- MACRO: EnD --");
 
     godot_variant ret;
     godot_variant stdout;
@@ -159,6 +194,6 @@ godot_variant prunner_run(
     api->godot_variant_new_array(&ret, &arr);
     api->godot_array_destroy(&arr);
 
-    /*api->godot_variant_new_pool_string_array(&ret, user_data->python_stdout);*/
+    GD_DEBUG("-- MACRO: EnD --");
     return ret;
 }

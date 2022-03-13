@@ -173,3 +173,18 @@ func _on_ResetButton_pressed():
 
 func _on_GenerateButton_pressed():
     generate()
+
+func _on_RunPythonButton_pressed():
+    var run_result = WFC.PRunner.run(
+        num_cols, num_rows,
+        image_data.num_img_parts * image_data.num_img_parts,
+        image_data.compatibilities)
+    var stdout = run_result[0].join("")
+    var stderr = run_result[1].join("")
+
+    if stderr:
+        # TODO: do something
+        print("ERROR")
+        print(stderr)
+    else:
+        print(stdout)
