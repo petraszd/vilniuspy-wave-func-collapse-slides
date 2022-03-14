@@ -127,24 +127,6 @@ void prunner_result_callback(void* p_user_data, int* compatibilities, int num_co
     GD_DEBUG(temp);
 }
 
-void prunner_extract_function_args(
-        int p_num_args,
-        godot_variant** p_args,
-        function_args_t* function_args)
-{
-    assert(p_num_args == 4);
-
-    function_args->num_cols = (int)(api->godot_variant_as_int(p_args[0]));
-    function_args->num_rows = (int)(api->godot_variant_as_int(p_args[1]));
-    function_args->num_image_fragments = (int)(api->godot_variant_as_int(p_args[2]));
-
-    godot_array array = api->godot_variant_as_array(p_args[3]);
-    function_args->num_compatibilities = (int)(api->godot_array_size(&array));
-    // TODO: push compatibilities
-
-    api->godot_array_destroy(&array);
-}
-
 godot_variant prunner_run(
         godot_object* p_instance,
         void* p_method_data,
@@ -154,18 +136,33 @@ godot_variant prunner_run(
 {
     GD_DEBUG("-- MACRO: Start --");
 
-    char temp[1024];
-    sprintf(temp, "%d", p_num_args); // TODO: extract args
-    GD_DEBUG(temp);
-
     prunner_user_data_t* user_data = p_user_data;
+
+    /* Reset state */
     api->godot_pool_string_array_resize(&user_data->python_stdout, 0);
     api->godot_pool_string_array_resize(&user_data->python_stderr, 0);
     // TODO: make sure it is enough to free memory
 
+    /* Extract args */
+    assert(p_num_args == 4);
     function_args_t function_args;
-    prunner_extract_function_args(p_num_args, p_args, &function_args);
+    function_args.num_cols = (int)(api->godot_variant_as_int(p_args[0]));
+    function_args.num_rows = (int)(api->godot_variant_as_int(p_args[1]));
+    function_args.num_image_fragments = (int)(api->godot_variant_as_int(p_args[2]));
 
+    godot_array compatibilities_arg = api->godot_variant_as_array(p_args[3]);
+    function_args.num_compatibilities = (int)(api->godot_array_size(&compatibilities_arg));
+    int compatibilities[function_args.num_compatibilities];
+    for (int i = 0; i < function_args.num_compatibilities; ++i) {
+        godot_variant item = api->godot_array_get(&compatibilities_arg, i);
+        compatibilities[i] = api->godot_variant_as_int(&item);
+        api->godot_variant_destroy(&item);
+    }
+    function_args.compatibilities = compatibilities;
+    // TODO: push compatibilities
+    api->godot_array_destroy(&compatibilities_arg);
+
+    /* Run */
     if (pside_run_code(
                 p_user_data,
                 &prunner_stdout_callback,
@@ -176,6 +173,7 @@ godot_variant prunner_run(
         GD_DEBUG("ERROR: while running Python code");
     }
 
+    /* Return */
     godot_variant ret;
     godot_variant stdout;
     godot_variant stderr;

@@ -157,27 +157,37 @@ int pside_run_code(
 
     /* -- Running code -- */
 
-    char temp[1024];
-    sprintf(temp, "print('num_cols =', %d)", p_function_args->num_cols);
+    char temp[2048];
+    sprintf(temp, "num_cols = %d", p_function_args->num_cols);
     PyRun_SimpleString(temp);
 
-    sprintf(temp, "print('num_rows =', %d)", p_function_args->num_rows);
+    sprintf(temp, "num_rows = %d", p_function_args->num_rows);
     PyRun_SimpleString(temp);
 
-    sprintf(temp, "print('num_image_fragments =', %d)", p_function_args->num_image_fragments);
+    sprintf(temp, "num_image_fragments = %d", p_function_args->num_image_fragments);
     PyRun_SimpleString(temp);
 
-    sprintf(temp, "print('num_compatibilities =', %d)", p_function_args->num_compatibilities);
+    sprintf(temp, "num_compatibilities = %d", p_function_args->num_compatibilities);
     PyRun_SimpleString(temp);
 
-    sprintf(temp, "__result = %d * %d", p_function_args->num_cols, p_function_args->num_rows);
+    int delta = sprintf(temp, "compatibilities = [");
+    for (int i = 0; i < p_function_args->num_compatibilities; ++i) {
+        delta += sprintf(temp + delta, "%d,", p_function_args->compatibilities[i]);
+    }
+    sprintf(temp + delta, "]");
+    PyRun_SimpleString(temp);
+
+    sprintf(temp, "print(num_cols, num_rows, num_image_fragments, num_compatibilities, compatibilities)");
+    PyRun_SimpleString(temp);
+
+    sprintf(temp, "result = 42"); /* TODO call function */
     PyRun_SimpleString(temp);
 
     /* -- Extracting result -- */
     PyObject* main_module = PyImport_ImportModule("__main__");
     PyObject* main_dict = PyModule_GetDict(main_module);
     Py_DECREF(main_module);
-    PyObject* result = PyDict_GetItemString(main_dict, "__result");
+    PyObject* result = PyDict_GetItemString(main_dict, "result");
 
     if (result->ob_type == &PyLong_Type) {
         p_result_callback(p_user_data, NULL /* TODO */, (int)(PyLong_AsLong(result)));
