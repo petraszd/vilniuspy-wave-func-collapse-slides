@@ -40,7 +40,7 @@ func _process(_delta):
         recursively_update_availability_flags(hovered_idx)
         emit_signal("tiles_state_changed")
 
-func _on_resized():
+func _on_self_resized():
     rescale_groups_wrapper()
 
 func process_mouse_position():

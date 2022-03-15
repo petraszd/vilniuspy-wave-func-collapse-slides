@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "TextEdit",
 "class": "PyTextEdit",
 "language": "GDScript",
-"path": "res://Scripts/PyTextEdit.gd"
+"path": "res://Scripts/WFCPyTextEdit.gd"
 }, {
 "base": "Control",
 "class": "WFCCollapser",

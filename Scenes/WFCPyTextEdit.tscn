@@ -1,18 +1,18 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Scripts/PyTextEdit.gd" type="Script" id=1]
-[ext_resource path="res://Fonts/PyTextEditFont.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Fonts/PyTextEditFont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Scripts/WFCPyTextEdit.gd" type="Script" id=2]
 
 [node name="PyTextEdit" type="TextEdit"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource( 1 )
 highlight_current_line = true
 syntax_highlighting = true
 show_line_numbers = true
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 values_color = Color( 0.921569, 0.580392, 0.2, 1 )
 other_color = Color( 0.741176, 0.796078, 0.227451, 1 )
 flow_color = Color( 0.137255, 0.67451, 0.811765, 1 )
