@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "TextEdit",
+"class": "PyTextEdit",
+"language": "GDScript",
+"path": "res://Scripts/PyTextEdit.gd"
+}, {
 "base": "Control",
 "class": "WFCCollapser",
 "language": "GDScript",
@@ -30,6 +35,7 @@ _global_script_classes=[ {
 "path": "res://Scripts/WFCTileErrors.gd"
 } ]
 _global_script_class_icons={
+"PyTextEdit": "",
 "WFCCollapser": "",
 "WFCImageData": "",
 "WFCTile": "",
