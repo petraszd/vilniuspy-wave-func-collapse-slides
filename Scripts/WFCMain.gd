@@ -7,6 +7,7 @@ var next_idx = WFC.NO_INDEX
 var slides = [
     preload("res://Scenes/Slides/Slide_01.tscn").instance(),
     preload("res://Scenes/Slides/Slide_02.tscn").instance(),
+    preload("res://Scenes/Slides/Slide_03.tscn").instance(),
 ]
 
 onready var slides_wrapper: Control = get_node("SlidesWrapper")

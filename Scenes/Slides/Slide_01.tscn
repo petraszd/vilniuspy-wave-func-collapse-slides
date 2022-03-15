@@ -1,76 +1,71 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
+[ext_resource path="res://Scenes/WFCPyTextEdit.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/WFCCollapser.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/WFCRunCode.gd" type="Script" id=3]
+[ext_resource path="res://Fonts/PyTextEditFont.tres" type="DynamicFont" id=4]
 
-[node name="HBoxContainer" type="HBoxContainer"]
+[node name="Slide_01" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-margin_right = 506.0
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 1020.0
 margin_bottom = 1200.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.33
+
+[node name="PyTextEdit" parent="HBoxContainer/VBoxContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1020.0
+margin_bottom = 1075.0
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
+margin_top = 1083.0
+margin_right = 1020.0
+margin_bottom = 1200.0
 custom_constants/margin_right = 40
 custom_constants/margin_top = 40
 custom_constants/margin_left = 40
 custom_constants/margin_bottom = 40
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="RunPythonButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer"]
 margin_left = 40.0
 margin_top = 40.0
-margin_right = 466.0
-margin_bottom = 1160.0
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0 )
-margin_right = 426.0
-margin_bottom = 909.0
-size_flags_vertical = 3
-
-[node name="GenerateButton" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_top = 917.0
-margin_right = 426.0
-margin_bottom = 954.0
-text = "Generate"
-
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0 )
-margin_top = 962.0
-margin_right = 426.0
-margin_bottom = 982.0
-custom_constants/separation = 20
-
-[node name="ResetButton" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_top = 990.0
-margin_right = 426.0
-margin_bottom = 1027.0
-text = "Reset"
-
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0 )
-margin_top = 1035.0
-margin_right = 426.0
-margin_bottom = 1075.0
-custom_constants/separation = 40
-
-[node name="RunPythonButton" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_top = 1083.0
-margin_right = 426.0
-margin_bottom = 1120.0
+margin_right = 980.0
+margin_bottom = 77.0
 text = "Run Python"
 
-[node name="WFCCollapser" parent="." instance=ExtResource( 2 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 514.0
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 1028.0
 margin_right = 2048.0
 margin_bottom = 1200.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="WFCCollapser" parent="HBoxContainer/VBoxContainer2" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1020.0
+margin_bottom = 794.0
+size_flags_stretch_ratio = 2.0
 num_cols = 5
 num_rows = 3
 allow_select_unavailable = true
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/GenerateButton" to="WFCCollapser" method="_on_GenerateButton_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/ResetButton" to="WFCCollapser" method="_on_ResetButton_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/RunPythonButton" to="WFCCollapser" method="_on_RunPythonButton_pressed"]
+[node name="Output" type="TextEdit" parent="HBoxContainer/VBoxContainer2"]
+margin_top = 802.0
+margin_right = 1020.0
+margin_bottom = 1200.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_colors/font_color_readonly = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 4 )
+readonly = true
+
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/MarginContainer/RunPythonButton" to="." method="_on_RunPythonButton_pressed"]

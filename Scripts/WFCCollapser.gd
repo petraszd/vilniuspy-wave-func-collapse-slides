@@ -24,6 +24,7 @@ onready var tile_errors: Node2D = get_node("Wrapper/TileErrors")
 func _ready():
     assert(num_cols > 0)
     assert(num_rows > 0)
+    print("HELLO", wrapper)
     generate_tiles()
     rescale_groups_wrapper()
 
@@ -41,7 +42,8 @@ func _process(_delta):
         emit_signal("tiles_state_changed")
 
 func _on_self_resized():
-    rescale_groups_wrapper()
+    if wrapper != null:
+        rescale_groups_wrapper()
 
 func process_mouse_position():
     var result = WFC.NO_INDEX
@@ -173,18 +175,3 @@ func _on_ResetButton_pressed():
 
 func _on_GenerateButton_pressed():
     generate()
-
-func _on_RunPythonButton_pressed():
-    var run_result = WFC.PRunner.run(
-        num_cols, num_rows,
-        image_data.num_img_parts * image_data.num_img_parts,
-        image_data.compatibilities)
-    var stdout = run_result[0].join("")
-    var stderr = run_result[1].join("")
-
-    if stderr:
-        # TODO: do something
-        print("ERROR")
-        print(stderr)
-    else:
-        print(stdout)
