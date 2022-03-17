@@ -198,6 +198,9 @@ int pside_run_code(
     if (PyRun_SimpleString(temp) != 0) {
         return -1;
     }
+    if (PyRun_SimpleString("assert all(isinstance(x, int) for x in result), 'All items in result must be int.'") != 0) {
+        return -1;
+    }
 
     /* -- Extracting result -- */
     PyObject* main_module = PyImport_ImportModule("__main__");

@@ -75,6 +75,7 @@ void GDN_EXPORT godot_nativescript_init(void* p_handle)
 typedef struct {
     godot_pool_string_array python_stdout;
     godot_pool_string_array python_stderr;
+    godot_pool_int_array selections;
 } prunner_user_data_t;
 
 void* prunner_constructor(godot_object* p_instance, void* p_method_data)
@@ -83,6 +84,7 @@ void* prunner_constructor(godot_object* p_instance, void* p_method_data)
 
     api->godot_pool_string_array_new(&user_data->python_stdout);
     api->godot_pool_string_array_new(&user_data->python_stderr);
+    api->godot_pool_int_array_new(&user_data->selections);
 
     return user_data;
 }
@@ -93,6 +95,7 @@ void prunner_destructor(godot_object* p_instance, void* p_method_data, void* p_u
 
     api->godot_pool_string_array_destroy(&user_data->python_stdout);
     api->godot_pool_string_array_destroy(&user_data->python_stderr);
+    api->godot_pool_int_array_destroy(&user_data->selections);
     // TODO: make sure that you do not need to destroy each element
 
     api->godot_free(p_user_data);
@@ -122,13 +125,10 @@ void prunner_stderr_callback(void* p_user_data, const char* p_stderr_str)
 
 void prunner_result_callback(void* p_user_data, int* result_items, int num_result_items)
 {
-    char temp[1024];
-    GD_DEBUG("CALLBACK START");
-    for (int i = 0; i < num_result_items; i += 3) {
-        sprintf(temp, "    %d, %d, %d", result_items[i], result_items[i + 1], result_items[i + 2]);
-        GD_DEBUG(temp);
+    prunner_user_data_t* user_data = p_user_data;
+    for (int i = 0; i < num_result_items; ++i) {
+        api->godot_pool_int_array_append(&user_data->selections, result_items[i]);
     }
-    GD_DEBUG("CALLBACK END");
 }
 
 godot_variant prunner_run(
@@ -145,6 +145,7 @@ godot_variant prunner_run(
     /* Reset state */
     api->godot_pool_string_array_resize(&user_data->python_stdout, 0);
     api->godot_pool_string_array_resize(&user_data->python_stderr, 0);
+    api->godot_pool_int_array_resize(&user_data->selections, 0);
     // TODO: make sure it is enough to free memory
 
     /* Extract args */
@@ -189,6 +190,7 @@ godot_variant prunner_run(
     godot_variant ret;
     godot_variant stdout;
     godot_variant stderr;
+    godot_variant selections;
     godot_array arr;
 
     api->godot_array_new(&arr);
@@ -200,6 +202,10 @@ godot_variant prunner_run(
     api->godot_variant_new_pool_string_array(&stderr, &user_data->python_stderr);
     api->godot_array_append(&arr, &stderr);
     api->godot_variant_destroy(&stderr);
+
+    api->godot_variant_new_pool_int_array(&selections, &user_data->selections);
+    api->godot_array_append(&arr, &selections);
+    api->godot_variant_destroy(&selections);
 
     api->godot_variant_new_array(&ret, &arr);
     api->godot_array_destroy(&arr);

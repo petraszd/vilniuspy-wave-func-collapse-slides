@@ -213,6 +213,9 @@ func remove_hovered_if_needed():
         update()
 
 func select_item(i):
+    if selected != WFC.NO_INDEX:
+        return
+
     selected = i
     current_state = TileState.SELECTED
     update()

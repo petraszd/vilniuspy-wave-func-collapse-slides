@@ -17,8 +17,16 @@ func _on_RunPythonButton_pressed():
         image_data.compatibilities)
     var stdout = run_result[0].join("")
     var stderr = run_result[1].join("")
+    var selections = run_result[2]
 
     if stderr:
         output.text = stderr
     else:
         output.text = stdout
+
+        for i in range(0, len(selections), 3):
+            var x = selections[i + 0]
+            var y = selections[i + 1]
+            var item = selections[i + 2]
+
+            collapser.select_item_in_tile(x, y, item)

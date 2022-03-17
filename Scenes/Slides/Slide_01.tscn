@@ -24,9 +24,14 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1020.0
 margin_bottom = 1075.0
-text = "def wfc_solve():
+text = "import random
+
+def wfc_solve():
     for i in range(3 * 5):
-        yield (1, 2, 3)"
+        x = i % 5
+        y = i // 5
+        item = random.randint(0, 15)
+        yield (x, y, item)"
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
 margin_top = 1083.0
