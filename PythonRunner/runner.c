@@ -120,11 +120,15 @@ void prunner_stderr_callback(void* p_user_data, const char* p_stderr_str)
     api->godot_string_destroy(&str);
 }
 
-void prunner_result_callback(void* p_user_data, int* compatibilities, int num_compatibilities)
+void prunner_result_callback(void* p_user_data, int* result_items, int num_result_items)
 {
     char temp[1024];
-    sprintf(temp, "callback got = %d", num_compatibilities);
-    GD_DEBUG(temp);
+    GD_DEBUG("CALLBACK START");
+    for (int i = 0; i < num_result_items; i += 3) {
+        sprintf(temp, "    %d, %d, %d", result_items[i], result_items[i + 1], result_items[i + 2]);
+        GD_DEBUG(temp);
+    }
+    GD_DEBUG("CALLBACK END");
 }
 
 godot_variant prunner_run(
@@ -144,8 +148,15 @@ godot_variant prunner_run(
     // TODO: make sure it is enough to free memory
 
     /* Extract args */
-    assert(p_num_args == 4);
+    assert(p_num_args == 5);
+
+    godot_string code_str = api->godot_variant_as_string(p_args[0]);
+    godot_char_string code_char_str = api->godot_string_utf8(&code_str);
+    api->godot_string_destroy(&code_str);
+
     function_args_t function_args;
+    function_args.code_len = api->godot_char_string_length(&code_char_str);
+    function_args.code = api->godot_char_string_get_data(&code_char_str);
     function_args.num_cols = (int)(api->godot_variant_as_int(p_args[1]));
     function_args.num_rows = (int)(api->godot_variant_as_int(p_args[2]));
     function_args.num_image_fragments = (int)(api->godot_variant_as_int(p_args[3]));
@@ -159,8 +170,6 @@ godot_variant prunner_run(
         api->godot_variant_destroy(&item);
     }
     function_args.compatibilities = compatibilities;
-    // TODO: push compatibilities
-    api->godot_array_destroy(&compatibilities_arg);
 
     /* Run */
     if (pside_run_code(
@@ -172,6 +181,9 @@ godot_variant prunner_run(
     {
         GD_DEBUG("ERROR: while running Python code");
     }
+
+    api->godot_array_destroy(&compatibilities_arg);
+    api->godot_char_string_destroy(&code_char_str);
 
     /* Return */
     godot_variant ret;

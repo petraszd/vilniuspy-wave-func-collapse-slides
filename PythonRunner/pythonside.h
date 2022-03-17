@@ -13,8 +13,10 @@ typedef struct {
     int num_cols;
     int num_rows;
     int num_image_fragments;
-    int* compatibilities;
-    int  num_compatibilities;
+    const int* compatibilities;
+    int num_compatibilities;
+    int code_len;
+    const char* code;
 } function_args_t;
 
 int pside_run_code(

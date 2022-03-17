@@ -20,7 +20,7 @@ static PyObject* common_write(PyObject* p_mod, PyObject* p_args)
     const char *utf8_string = PyUnicode_AsUTF8AndSize(python_string, &utf8_string_len);
     Py_DECREF(python_string);
 
-    assert(utf8_string_len > 0);
+    assert(utf8_string_len >= 0);
     assert(utf8_string != NULL);
     assert(utf8_string_len >= python_string_len);
 
@@ -157,6 +157,8 @@ int pside_run_code(
 
     /* -- Running code -- */
 
+    int num_result_items = p_function_args->num_cols * p_function_args->num_rows * 3;
+
     char temp[2048];
     sprintf(temp, "num_cols = %d", p_function_args->num_cols);
     PyRun_SimpleString(temp);
@@ -177,11 +179,25 @@ int pside_run_code(
     sprintf(temp + delta, "]");
     PyRun_SimpleString(temp);
 
-    sprintf(temp, "print(num_cols, num_rows, num_image_fragments, num_compatibilities, compatibilities)");
-    PyRun_SimpleString(temp);
+    if (PyRun_SimpleString(p_function_args->code) != 0) {
+        return -1;
+    }
 
-    sprintf(temp, "result = 42"); /* TODO call function */
-    PyRun_SimpleString(temp);
+    PyRun_SimpleString("result = []");
+    /* TODO: wfc_solve[: (num_cols * num_rows * 3)] */
+    if (PyRun_SimpleString(
+            "for x in wfc_solve():\n" \
+            "    result.append(x[0])\n" \
+            "    result.append(x[1])\n" \
+            "    result.append(x[2])\n") != 0)
+    {
+        return -1;
+    }
+
+    sprintf(temp, "assert len(result) == %d, f'wfc_solve(...) items count {len(result)} is wrong'", num_result_items);
+    if (PyRun_SimpleString(temp) != 0) {
+        return -1;
+    }
 
     /* -- Extracting result -- */
     PyObject* main_module = PyImport_ImportModule("__main__");
@@ -189,8 +205,15 @@ int pside_run_code(
     Py_DECREF(main_module);
     PyObject* result = PyDict_GetItemString(main_dict, "result");
 
-    if (result->ob_type == &PyLong_Type) {
-        p_result_callback(p_user_data, NULL /* TODO */, (int)(PyLong_AsLong(result)));
+    if (result != NULL && result->ob_type == &PyList_Type) {
+        Py_INCREF(result);
+        int result_items[num_result_items];
+        for (int i = 0; i < num_result_items; ++i) {
+            PyObject* result_item = PyList_GetItem(result, i);
+            result_items[i] = (int)PyLong_AsLong(result_item);
+        }
+        p_result_callback(p_user_data, result_items, num_result_items);
+        Py_DECREF(result);
     } else {
         return -1;
     }

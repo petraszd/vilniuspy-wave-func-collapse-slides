@@ -8,7 +8,6 @@ func _on_RunPythonButton_pressed():
     collapser.restore_state()
 
     output.text = ""
-    print(editor.text)
 
     var image_data = collapser.image_data
     var run_result = WFC.PRunner.run(
