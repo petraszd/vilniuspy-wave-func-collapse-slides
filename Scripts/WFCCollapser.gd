@@ -171,9 +171,10 @@ func generate():
 
 func select_item_in_tile(x, y, item):
     var tile_idx = y * num_cols + x
-    tiles[tile_idx].select_item(item)
-    recursively_update_availability_flags(tile_idx)
-    emit_signal("tiles_state_changed")
+    if tile_idx >= 0 and tile_idx < len(tiles):
+        tiles[tile_idx].select_item(item)
+        recursively_update_availability_flags(tile_idx)
+        emit_signal("tiles_state_changed")
 
 func _on_ResetButton_pressed():
     restore_state()

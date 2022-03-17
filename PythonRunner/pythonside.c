@@ -186,7 +186,13 @@ int pside_run_code(
     PyRun_SimpleString("result = []");
     /* TODO: wfc_solve[: (num_cols * num_rows * 3)] */
     if (PyRun_SimpleString(
-            "for x in wfc_solve():\n" \
+            "solve_args = [\n" \
+            "    num_cols,\n" \
+            "    num_rows,\n" \
+            "    num_image_fragments,\n" \
+            "    compatibilities,\n" \
+            "]\n" \
+            "for x in wfc_solve(*solve_args):\n" \
             "    result.append(x[0])\n" \
             "    result.append(x[1])\n" \
             "    result.append(x[2])\n") != 0)

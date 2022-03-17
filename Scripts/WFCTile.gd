@@ -213,7 +213,7 @@ func remove_hovered_if_needed():
         update()
 
 func select_item(i):
-    if selected != WFC.NO_INDEX:
+    if selected != WFC.NO_INDEX or i < 0 or i > image_data.num_img_parts * image_data.num_img_parts:
         return
 
     selected = i

@@ -138,8 +138,6 @@ godot_variant prunner_run(
         int p_num_args,
         godot_variant** p_args)
 {
-    GD_DEBUG("-- MACRO: Start --");
-
     prunner_user_data_t* user_data = p_user_data;
 
     /* Reset state */
@@ -210,6 +208,5 @@ godot_variant prunner_run(
     api->godot_variant_new_array(&ret, &arr);
     api->godot_array_destroy(&arr);
 
-    GD_DEBUG("-- MACRO: EnD --");
     return ret;
 }
