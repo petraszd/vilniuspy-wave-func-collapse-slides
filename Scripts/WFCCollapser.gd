@@ -24,7 +24,6 @@ onready var tile_errors: Node2D = get_node("Wrapper/TileErrors")
 func _ready():
     assert(num_cols > 0)
     assert(num_rows > 0)
-    print("HELLO", wrapper)
     generate_tiles()
     rescale_groups_wrapper()
 

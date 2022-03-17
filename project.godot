@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "TextEdit",
-"class": "PyTextEdit",
-"language": "GDScript",
-"path": "res://Scripts/WFCPyTextEdit.gd"
-}, {
 "base": "Control",
 "class": "WFCCollapser",
 "language": "GDScript",
@@ -23,6 +18,11 @@ _global_script_classes=[ {
 "class": "WFCImageData",
 "language": "GDScript",
 "path": "res://Scripts/WFCImageData.gd"
+}, {
+"base": "TextEdit",
+"class": "WFCPyTextEdit",
+"language": "GDScript",
+"path": "res://Scripts/WFCPyTextEdit.gd"
 }, {
 "base": "Node2D",
 "class": "WFCTile",
@@ -35,9 +35,9 @@ _global_script_classes=[ {
 "path": "res://Scripts/WFCTileErrors.gd"
 } ]
 _global_script_class_icons={
-"PyTextEdit": "",
 "WFCCollapser": "",
 "WFCImageData": "",
+"WFCPyTextEdit": "",
 "WFCTile": "",
 "WFCTileErrors": ""
 }

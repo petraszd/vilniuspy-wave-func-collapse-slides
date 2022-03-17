@@ -146,11 +146,11 @@ godot_variant prunner_run(
     /* Extract args */
     assert(p_num_args == 4);
     function_args_t function_args;
-    function_args.num_cols = (int)(api->godot_variant_as_int(p_args[0]));
-    function_args.num_rows = (int)(api->godot_variant_as_int(p_args[1]));
-    function_args.num_image_fragments = (int)(api->godot_variant_as_int(p_args[2]));
+    function_args.num_cols = (int)(api->godot_variant_as_int(p_args[1]));
+    function_args.num_rows = (int)(api->godot_variant_as_int(p_args[2]));
+    function_args.num_image_fragments = (int)(api->godot_variant_as_int(p_args[3]));
 
-    godot_array compatibilities_arg = api->godot_variant_as_array(p_args[3]);
+    godot_array compatibilities_arg = api->godot_variant_as_array(p_args[4]);
     function_args.num_compatibilities = (int)(api->godot_array_size(&compatibilities_arg));
     int compatibilities[function_args.num_compatibilities];
     for (int i = 0; i < function_args.num_compatibilities; ++i) {

@@ -1,6 +1,6 @@
 extends TextEdit
 
-class_name PyTextEdit
+class_name WFCPyTextEdit
 
 
 export var values_color = Color(0, 0, 0)
