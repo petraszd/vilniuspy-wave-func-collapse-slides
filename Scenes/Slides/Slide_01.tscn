@@ -26,23 +26,20 @@ margin_right = 1020.0
 margin_bottom = 1075.0
 text = "import random
 
+FROM_TOP_TO_BOTTOM = 1
+FROM_BOTTOM_TO_TOP = 2
+FROM_RIGHT_TO_LEFT = 4
+FROM_LEFT_TO_RIGHT = 8
+
 def wfc_solve(
         num_cols,
         num_rows,
-        num_img_fragments,
+        num_fragments,
         compatibilities,
 ):
     for y in range(num_rows):
         for x in range(num_cols):
-            item = random.randint(
-                0, num_img_fragments - 1
-            )
-            yield (x, y, item)
-
-FROM_TOP_TO_BOTTOM = 1
-FROM_BOTTOM_TO_TOP = 2
-FROM_RIGHT_TO_LEFT = 4
-FROM_LEFT_TO_RIGHT = 8"
+            yield(x, y, 0)"
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
 margin_top = 1083.0
@@ -76,6 +73,7 @@ size_flags_stretch_ratio = 2.0
 num_cols = 5
 num_rows = 3
 allow_select_unavailable = true
+is_instant_generation = false
 
 [node name="Output" type="TextEdit" parent="HBoxContainer/VBoxContainer2"]
 margin_top = 802.0

@@ -169,6 +169,15 @@ func generate():
         recursively_update_availability_flags(tile_idx)
         emit_signal("tiles_state_changed")
 
+func select_using_array_of_selections(selections):
+    for i in range(0, len(selections), 3):
+        var x = selections[i + 0]
+        var y = selections[i + 1]
+        var item = selections[i + 2]
+        if not is_instant_generation:
+            yield(get_tree().create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
+        select_item_in_tile(x, y, item)
+
 func select_item_in_tile(x, y, item):
     var tile_idx = y * num_cols + x
     if tile_idx >= 0 and tile_idx < len(tiles):

@@ -78,6 +78,7 @@ func _input(event):
                 if event.shift:
                     var cursor_col_idx = cursor_get_column()
                     var cursor_line_idx = cursor_get_line()
+                    var scroll_backup = scroll_vertical
 
                     var new_lines = PoolStringArray()
 
@@ -99,6 +100,7 @@ func _input(event):
                     accept_event()
                     cursor_set_line(cursor_line_idx)
                     cursor_set_column(cursor_col_idx - col_idx_delta)
+                    scroll_vertical = scroll_backup
                 else:
                     insert_text_at_cursor("    ")
                     accept_event()
@@ -109,6 +111,7 @@ func _input(event):
                 var line_idx_to = get_selection_to_line()
                 var cursor_col_idx = cursor_get_column()
                 var cursor_line_idx = cursor_get_line()
+                var scroll_backup = scroll_vertical
 
                 var new_lines = PoolStringArray()
 
@@ -136,6 +139,7 @@ func _input(event):
                     select(line_idx_from, col_idx_from + 4, line_idx_to, col_idx_to + 4)
                     cursor_set_column(cursor_col_idx + 4)
                 cursor_set_line(cursor_line_idx)
+                scroll_vertical = scroll_backup
 
         elif event.scancode == KEY_ENTER and event.is_pressed():
             var line = get_line(cursor_get_line())
@@ -151,6 +155,7 @@ func _input(event):
         elif event.scancode == KEY_BACKSPACE and event.is_pressed() and get_selection_text() == "":
             var line_idx = cursor_get_line()
             var col_idx = cursor_get_column()
+            var scroll_backup = scroll_vertical
 
             var current_line = get_line(line_idx)
 
@@ -174,6 +179,7 @@ func _input(event):
                 accept_event()
                 cursor_set_line(line_idx)
                 cursor_set_column(col_idx - 4)
+                scroll_vertical = scroll_backup
 
 
 func _update_editor_colors():

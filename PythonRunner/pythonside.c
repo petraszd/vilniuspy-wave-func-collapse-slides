@@ -157,7 +157,7 @@ int pside_run_code(
 
     /* -- Running code -- */
 
-    int num_result_items = p_function_args->num_cols * p_function_args->num_rows * 3;
+    int expected_num_result_items = p_function_args->num_cols * p_function_args->num_rows * 3;
 
     char temp[2048];
     sprintf(temp, "num_cols = %d", p_function_args->num_cols);
@@ -200,8 +200,7 @@ int pside_run_code(
         return -1;
     }
 
-    sprintf(temp, "assert len(result) == %d, f'wfc_solve(...) items count {len(result)} is wrong'", num_result_items);
-    if (PyRun_SimpleString(temp) != 0) {
+    if (PyRun_SimpleString("assert len(result) % 3 == 0, f'wfc_solve(...) result is in a wrong shape.'") != 0) {
         return -1;
     }
     if (PyRun_SimpleString("assert all(isinstance(x, int) for x in result), 'All items in result must be int.'") != 0) {
@@ -216,6 +215,11 @@ int pside_run_code(
 
     if (result != NULL && result->ob_type == &PyList_Type) {
         Py_INCREF(result);
+        int num_result_items = PyList_GET_SIZE(result);
+        if (num_result_items > expected_num_result_items) {
+            num_result_items = expected_num_result_items;
+        }
+
         int result_items[num_result_items];
         for (int i = 0; i < num_result_items; ++i) {
             PyObject* result_item = PyList_GetItem(result, i);
