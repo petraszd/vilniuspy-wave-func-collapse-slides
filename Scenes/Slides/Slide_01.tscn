@@ -67,6 +67,7 @@ anchor_bottom = 0.0
 margin_left = 260.0
 margin_right = 1024.0
 margin_bottom = 600.0
+image_data_idx = 1
 num_cols = 5
 num_rows = 3
 allow_select_unavailable = true

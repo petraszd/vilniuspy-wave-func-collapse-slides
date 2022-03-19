@@ -51,6 +51,7 @@ config/icon="res://icon.png"
 [autoload]
 
 WFC="*res://Scripts/WFC.gd"
+WFCImageDataProvider="*res://Scenes/WFCImageDataProvider.tscn"
 
 [display]
 

@@ -5,6 +5,7 @@ extends Control
 signal tiles_state_changed(tiles, num_cols, num_rows)
 
 
+export(int) var image_data_idx = 0
 export(int) var padding = 20
 export(int) var num_cols = 1
 export(int) var num_rows = 1
@@ -14,8 +15,8 @@ export(bool) var is_instant_generation = true
 var tile_scene = preload("res://Scenes/WFCTile.tscn")
 var tiles = []
 var is_mouse_pressed: bool = false
+var image_data: WFCImageData = null
 
-onready var image_data: WFCImageData = get_node("ImageData")
 onready var groups: Node2D = get_node("Wrapper/Groups")
 onready var wrapper: Node2D = get_node("Wrapper")
 onready var tile_errors: Node2D = get_node("Wrapper/TileErrors")
@@ -24,8 +25,13 @@ onready var tile_errors: Node2D = get_node("Wrapper/TileErrors")
 func _ready():
     assert(num_cols > 0)
     assert(num_rows > 0)
+    image_data = WFCImageDataProvider.items[image_data_idx]
+
     generate_tiles()
     rescale_groups_wrapper()
+
+    print("IDX", image_data_idx)
+    print("DATA", image_data)
 
     tile_errors.image_data = image_data
     assert(connect("tiles_state_changed", tile_errors, "_on_tiles_state_changed", [tiles, num_cols, num_rows]) == 0)

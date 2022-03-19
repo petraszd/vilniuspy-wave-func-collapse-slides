@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/WFCImageDataProvider.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/WFCImageData.gd" type="Script" id=2]
+[ext_resource path="res://Textures/Tiles.png" type="Texture" id=3]
+[ext_resource path="res://Textures/PythonTiles.png" type="Texture" id=4]
+
+[node name="WFCImageDataProvider" type="Node"]
+script = ExtResource( 1 )
+
+[node name="Fragments_1" type="Node" parent="."]
+script = ExtResource( 2 )
+tiles_texture = ExtResource( 3 )
+num_img_parts = 4
+
+[node name="Fragments_2" type="Node" parent="."]
+script = ExtResource( 2 )
+tiles_texture = ExtResource( 4 )
+num_img_parts = 4

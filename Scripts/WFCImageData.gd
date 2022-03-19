@@ -35,7 +35,7 @@ class ColorInfo:
         return positive_result
 
 
-const num_points_for_compatibilities = 4
+const num_points_for_compatibilities = 32
 
 export(Texture) var tiles_texture
 export(int) var num_img_parts = 1  # TODO: rename num_side_parts
