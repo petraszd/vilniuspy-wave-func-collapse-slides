@@ -30,9 +30,6 @@ func _ready():
     generate_tiles()
     rescale_groups_wrapper()
 
-    print("IDX", image_data_idx)
-    print("DATA", image_data)
-
     tile_errors.image_data = image_data
     assert(connect("tiles_state_changed", tile_errors, "_on_tiles_state_changed", [tiles, num_cols, num_rows]) == 0)
 

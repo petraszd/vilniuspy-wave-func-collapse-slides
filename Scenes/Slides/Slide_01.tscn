@@ -67,9 +67,9 @@ anchor_bottom = 0.0
 margin_left = 260.0
 margin_right = 1024.0
 margin_bottom = 600.0
-image_data_idx = 1
-num_cols = 5
-num_rows = 3
+image_data_idx = 2
+num_cols = 6
+num_rows = 4
 allow_select_unavailable = true
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GenerateButton" to="WFCCollapser" method="_on_GenerateButton_pressed"]

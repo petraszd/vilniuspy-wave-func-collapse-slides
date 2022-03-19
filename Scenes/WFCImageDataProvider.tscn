@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/WFCImageDataProvider.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/WFCImageData.gd" type="Script" id=2]
-[ext_resource path="res://Textures/Tiles.png" type="Texture" id=3]
-[ext_resource path="res://Textures/PythonTiles.png" type="Texture" id=4]
+[ext_resource path="res://Textures/CastleFragments.png" type="Texture" id=3]
+[ext_resource path="res://Textures/PythonFragments.png" type="Texture" id=4]
+[ext_resource path="res://Textures/PythonFragmentsLarge.png" type="Texture" id=5]
 
 [node name="WFCImageDataProvider" type="Node"]
 script = ExtResource( 1 )
@@ -17,3 +18,8 @@ num_img_parts = 4
 script = ExtResource( 2 )
 tiles_texture = ExtResource( 4 )
 num_img_parts = 4
+
+[node name="Fragments_3" type="Node" parent="."]
+script = ExtResource( 2 )
+tiles_texture = ExtResource( 5 )
+num_img_parts = 8

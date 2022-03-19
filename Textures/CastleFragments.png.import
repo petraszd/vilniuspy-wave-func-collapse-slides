@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Tiles.png-884391f8ffa09632c42b8abb71cd4f47.stex"
+path="res://.import/CastleFragments.png-e84a06f31018c45630f4ea0087a7273a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Tiles.png"
-dest_files=[ "res://.import/Tiles.png-884391f8ffa09632c42b8abb71cd4f47.stex" ]
+source_file="res://Textures/CastleFragments.png"
+dest_files=[ "res://.import/CastleFragments.png-e84a06f31018c45630f4ea0087a7273a.stex" ]
 
 [params]
 
