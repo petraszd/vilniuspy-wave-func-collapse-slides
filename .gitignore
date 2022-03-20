@@ -6,3 +6,5 @@ PythonRunner/.cache/
 PythonRunner/*.os
 PythonRunner/compile_commands.json
 NativeLibs/PythonRunner.dylib
+Output/*
+.DS_Store
