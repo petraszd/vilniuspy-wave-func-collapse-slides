@@ -47,11 +47,7 @@ anchor_bottom = 1.0
 anims/ChangeSlides = SubResource( 1 )
 
 [node name="DisplayFPS" parent="." instance=ExtResource( 2 )]
-visible = false
-anchor_left = 1.0
-anchor_bottom = 0.0
-margin_left = -873.0
 margin_right = 0.0
-margin_bottom = 1200.0
+margin_bottom = 0.0
 size_flags_horizontal = 1
 size_flags_vertical = 1

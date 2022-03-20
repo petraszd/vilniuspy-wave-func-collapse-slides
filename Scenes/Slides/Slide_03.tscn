@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Scripts/WFCRunCode.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/WFCRunCodeController.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/WFCCollapser.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Fonts/PyTextEditFont.tres" type="DynamicFont" id=3]
 [ext_resource path="res://Scenes/WFCPyTextEdit.tscn" type="PackedScene" id=4]

@@ -174,6 +174,8 @@ func restore_state():
     current_state = TileState.NOT_SELECTED
     for i in range(len(availability_flags)):
         availability_flags.set(i, AvailabilityFlag.AVAILABLE)
+    if not tween.stop_all():
+        print("Error stopping tweens")
     update()
 
 func process_local_mouse_position(mouse_pos):

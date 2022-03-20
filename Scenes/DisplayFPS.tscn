@@ -7,6 +7,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 1.0
 margin_bottom = 1.0
+mouse_filter = 2
+input_pass_on_modal_close_click = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -20,6 +22,7 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = -5.0
 margin_bottom = -5.0
+mouse_filter = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 __meta__ = {
@@ -27,13 +30,14 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 2039.0
-margin_bottom = 1191.0
+margin_right = 1015.0
+margin_bottom = 591.0
+mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="FPS" type="Label" parent="MarginContainer/VBoxContainer"]
-margin_right = 2039.0
-margin_bottom = 14.0
+margin_right = 1015.0
+margin_bottom = 25.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 text = "FPS: 00.00"
