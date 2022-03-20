@@ -4,17 +4,24 @@ extends Node
 var current_idx = WFC.NO_INDEX
 var next_idx = WFC.NO_INDEX
 
-var slides = [
-    preload("res://Scenes/Slides/Slide_01.tscn").instance(),
-    preload("res://Scenes/Slides/Slide_02.tscn").instance(),
-    preload("res://Scenes/Slides/Slide_03.tscn").instance(),
-]
+var slides = []
 
 onready var slides_wrapper: Control = get_node("SlidesWrapper")
 onready var anim_player: AnimationPlayer = get_node("AnimationPlayer")
 
 
 func _ready():
+    var dir = Directory.new()
+    var slides_path = "res://Scenes/Slides"
+    if dir.open(slides_path) == OK:
+        dir.list_dir_begin()
+        while true:
+            var filename = dir.get_next()
+            if not filename:
+                break
+            if filename.ends_with(".tscn"):
+                slides.append(load(slides_path + "/" + filename).instance())
+
     assert(slides.size() > 0)
     _set_next_slide(0)
 
