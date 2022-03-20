@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Scenes/DisplayFPS.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/WFCMain.gd" type="Script" id=3]
 
 [sub_resource type="Animation" id=1]
@@ -42,7 +41,7 @@ script = ExtResource( 3 )
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.5658, 0.82, 0.80729, 1 )
+color = Color( 0.693, 0.9, 0.88965, 1 )
 
 [node name="SlidesWrapper" type="Control" parent="."]
 anchor_right = 1.0
@@ -50,9 +49,3 @@ anchor_bottom = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/ChangeSlides = SubResource( 1 )
-
-[node name="DisplayFPS" parent="." instance=ExtResource( 2 )]
-margin_right = 0.0
-margin_bottom = 0.0
-size_flags_horizontal = 1
-size_flags_vertical = 1

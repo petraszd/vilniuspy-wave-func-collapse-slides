@@ -15,12 +15,17 @@ func _ready():
     var slides_path = "res://Scenes/Slides"
     if dir.open(slides_path) == OK:
         dir.list_dir_begin()
+        var filenames = []
         while true:
             var filename = dir.get_next()
             if not filename:
                 break
             if filename.ends_with(".tscn"):
-                slides.append(load(slides_path + "/" + filename).instance())
+                filenames.append(filename)
+
+        filenames.sort()
+        for filename in filenames:
+            slides.append(load(slides_path + "/" + filename).instance())
 
     assert(slides.size() > 0)
     _set_next_slide(0)
