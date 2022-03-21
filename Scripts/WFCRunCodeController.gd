@@ -2,7 +2,7 @@ extends Node
 
 onready var editor: WFCPyTextEdit = get_node("HBoxContainer/VBoxContainer/PyTextEdit")
 onready var collapser: WFCCollapser = get_node("HBoxContainer/VBoxContainer2/WFCCollapser")
-onready var output: TextEdit = get_node("HBoxContainer/VBoxContainer2/Output")
+onready var output: RichTextLabel = get_node("HBoxContainer/VBoxContainer2/Output")
 
 func _on_RunPythonButton_pressed():
     collapser.restore_state()
@@ -24,3 +24,7 @@ func _on_RunPythonButton_pressed():
     else:
         output.text = stdout
         collapser.select_using_array_of_selections(selections)
+
+func _on_ResetButton_pressed():
+    collapser.restore_state()
+    output.text = ""

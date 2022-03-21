@@ -41,7 +41,7 @@ script = ExtResource( 3 )
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.693, 0.9, 0.88965, 1 )
+color = Color( 1, 0.870588, 0.737255, 1 )
 
 [node name="SlidesWrapper" type="Control" parent="."]
 anchor_right = 1.0

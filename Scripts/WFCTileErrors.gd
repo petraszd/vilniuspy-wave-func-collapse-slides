@@ -49,5 +49,7 @@ func _on_tiles_state_changed(tiles, num_cols, num_rows):
                         rect.size.y = 1
                         error_rects.append(rect)
 
-    yield(get_tree().create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
-    update()
+    var tree = get_tree()
+    if tree:
+        yield(tree.create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
+        update()

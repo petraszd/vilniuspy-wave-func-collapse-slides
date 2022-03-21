@@ -165,7 +165,9 @@ func generate():
             break
 
         if not is_instant_generation:
-            yield(get_tree().create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
+            var tree = get_tree()
+            if tree:
+                yield(tree.create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
 
         var tile_idx = indexes_with_max[randi() % len(indexes_with_max)]
         tiles[tile_idx].select_random_available_item()
@@ -178,7 +180,9 @@ func select_using_array_of_selections(selections):
         var y = selections[i + 1]
         var item = selections[i + 2]
         if not is_instant_generation:
-            yield(get_tree().create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
+            var tree = get_tree()
+            if tree:
+                yield(tree.create_timer(WFC.TRANSITION_ANIM_SPEED + 0.001), "timeout")
         select_item_in_tile(x, y, item)
 
 func select_item_in_tile(x, y, item):

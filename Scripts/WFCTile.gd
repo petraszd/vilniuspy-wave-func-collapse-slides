@@ -24,8 +24,8 @@ enum AvailabilityFlag {
 
 const outer_margin = 0.02  # fraction
 const inner_margin = 0.05  # fraction
-const not_available_color = Color(0.6, 0.6, 0.8, 0.6)
-const hovered_color = Color(1.0, 1.0, 1.0, 0.75)
+const not_available_color = Color(0.6, 0.6, 0.8, 1)
+const hovered_color = Color(0.9, 0.9, 0.9, 1)
 const available_color = Color.white
 const texture_epsilon = 0.05
 
