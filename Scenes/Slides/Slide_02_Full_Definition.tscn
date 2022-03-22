@@ -31,28 +31,28 @@ text = "Definition"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_top = 89.0
+margin_top = 93.0
 margin_right = 1800.0
-margin_bottom = 109.0
+margin_bottom = 113.0
 custom_constants/separation = 20
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
-margin_top = 113.0
+margin_top = 121.0
 margin_right = 1800.0
-margin_bottom = 163.0
+margin_bottom = 171.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "https://github.com/mxgmn/WaveFunctionCollapse"
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_top = 167.0
+margin_top = 179.0
 margin_right = 1800.0
-margin_bottom = 207.0
+margin_bottom = 219.0
 custom_constants/separation = 40
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 211.0
+margin_top = 227.0
 margin_right = 1800.0
 margin_bottom = 1020.0
 size_flags_vertical = 3

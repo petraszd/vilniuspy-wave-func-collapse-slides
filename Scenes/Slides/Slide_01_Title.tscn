@@ -20,14 +20,14 @@ margin_bottom = 1060.0
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 1840.0
-margin_bottom = 465.0
+margin_bottom = 454.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 1.33
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_top = 469.0
+margin_top = 462.0
 margin_right = 1840.0
-margin_bottom = 554.0
+margin_bottom = 547.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "Intro to Wave Function Collapse"
@@ -35,15 +35,15 @@ align = 1
 
 [node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_top = 558.0
+margin_top = 555.0
 margin_right = 1840.0
-margin_bottom = 578.0
+margin_bottom = 575.0
 custom_constants/separation = 20
 
 [node name="Label2" type="Label" parent="VBoxContainer"]
-margin_top = 582.0
+margin_top = 583.0
 margin_right = 1840.0
-margin_bottom = 685.0
+margin_bottom = 689.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "Petras Zdanavičius
@@ -52,7 +52,7 @@ align = 1
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_top = 689.0
+margin_top = 697.0
 margin_right = 1840.0
 margin_bottom = 1040.0
 size_flags_vertical = 3

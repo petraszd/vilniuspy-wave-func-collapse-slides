@@ -35,7 +35,7 @@ class ColorInfo:
         return positive_result
 
 
-const num_points_for_compatibilities = 32
+export(int) var num_points_for_compatibilities = 32
 
 export(Texture) var tiles_texture
 export(int) var num_img_parts = 1  # TODO: rename num_side_parts
@@ -46,7 +46,6 @@ var compatibilities: Array = []
 
 func _ready():
     assert(num_img_parts > 0)
-    # TODO: Image.FORMAT_RGBA8
     img = tiles_texture.get_data()
     assert(img.get_format() == Image.FORMAT_RGBA8)
     calculate_compatibilities()
@@ -74,9 +73,9 @@ func get_color_infos():
     var w = img.get_width()
     var h = img.get_height()
     var img_part_w = img.get_width() / num_img_parts
-    var w_step = img_part_w / (num_points_for_compatibilities - 1)
+    var w_step = img_part_w / (num_points_for_compatibilities + 1)
     var img_part_h = img.get_height() / num_img_parts
-    var h_step = img_part_h / (num_points_for_compatibilities - 1)
+    var h_step = img_part_h / (num_points_for_compatibilities + 1)
 
     var color_infos = []
     for y in range(num_img_parts):
@@ -88,7 +87,10 @@ func get_color_infos():
             var y0 = y * img_part_h
             var y1 = (y + 1) * img_part_h - 1
 
-            for c in range(num_points_for_compatibilities):
+            for c in range(num_points_for_compatibilities + 2):
+                if c == 0 or c == num_points_for_compatibilities + 1:
+                    continue
+
                 var x2 = c * w_step
                 var y2 = c * h_step
 
