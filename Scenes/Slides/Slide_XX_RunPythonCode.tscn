@@ -15,15 +15,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 958.0
+margin_right = 956.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
 
 [node name="PyTextEdit" parent="HBoxContainer/VBoxContainer" instance=ExtResource( 4 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 958.0
-margin_bottom = 940.0
+margin_right = 956.0
+margin_bottom = 930.0
 text = "import random
 
 FROM_TOP_TO_BOTTOM = 1
@@ -37,13 +37,11 @@ def wfc_solve(
         num_fragments,
         compatibilities,
 ):
-    for y in range(num_rows):
-        for x in range(num_cols):
-            yield(x, y, 0)"
+    yield 0, 0, 0"
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
-margin_top = 944.0
-margin_right = 958.0
+margin_top = 938.0
+margin_right = 956.0
 margin_bottom = 1080.0
 custom_constants/margin_right = 0
 custom_constants/margin_top = 40
@@ -53,41 +51,41 @@ custom_constants/margin_bottom = 40
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer"]
 margin_left = 40.0
 margin_top = 40.0
-margin_right = 958.0
-margin_bottom = 96.0
+margin_right = 956.0
+margin_bottom = 102.0
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_right = 324.0
-margin_bottom = 56.0
+margin_right = 319.0
+margin_bottom = 62.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.2
 
 [node name="RunPythonButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 328.0
-margin_right = 599.0
-margin_bottom = 56.0
+margin_left = 327.0
+margin_right = 593.0
+margin_bottom = 62.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 5 )
 text = "Run Python"
 
 [node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
-margin_left = 603.0
-margin_right = 643.0
-margin_bottom = 56.0
+margin_left = 601.0
+margin_right = 641.0
+margin_bottom = 62.0
 custom_constants/separation = 40
 
 [node name="ResetButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 647.0
-margin_right = 918.0
-margin_bottom = 56.0
+margin_left = 649.0
+margin_right = 916.0
+margin_bottom = 62.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 5 )
 text = "Reset"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 962.0
+margin_left = 964.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
@@ -96,8 +94,8 @@ size_flags_vertical = 3
 [node name="WFCCollapser" parent="HBoxContainer/VBoxContainer2" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 958.0
-margin_bottom = 717.0
+margin_right = 956.0
+margin_bottom = 714.0
 size_flags_stretch_ratio = 2.0
 num_cols = 5
 num_rows = 3
@@ -105,10 +103,11 @@ allow_select_unavailable = true
 is_instant_generation = false
 
 [node name="Output" type="RichTextLabel" parent="HBoxContainer/VBoxContainer2"]
-margin_top = 721.0
-margin_right = 958.0
+margin_top = 722.0
+margin_right = 956.0
 margin_bottom = 1080.0
 size_flags_vertical = 3
+custom_colors/default_color = Color( 0, 0, 0, 1 )
 
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/RunPythonButton" to="." method="_on_RunPythonButton_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/MarginContainer/HBoxContainer/ResetButton" to="." method="_on_ResetButton_pressed"]
