@@ -41,4 +41,4 @@ margin_right = 1800.0
 margin_bottom = 211.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "It is a badly named procedural generation algorithm."
+text = "It is a procedural generation algorithm."

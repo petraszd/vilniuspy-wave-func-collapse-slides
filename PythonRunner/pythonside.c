@@ -130,7 +130,7 @@ int pside_run_code(
         return -1;
     }
     if (PyImport_AppendInittab("stderr_capture", &create_stderr_capture_module) == -1) {
-        return -1;
+        return -2;
     }
     // TODO: Py_SetProgramName(...);
     Py_Initialize();
@@ -159,7 +159,7 @@ int pside_run_code(
 
     int expected_num_result_items = p_function_args->num_cols * p_function_args->num_rows * 3;
 
-    char temp[2048];
+    char temp[1024];
     sprintf(temp, "num_cols = %d", p_function_args->num_cols);
     PyRun_SimpleString(temp);
 
@@ -172,15 +172,14 @@ int pside_run_code(
     sprintf(temp, "num_compatibilities = %d", p_function_args->num_compatibilities);
     PyRun_SimpleString(temp);
 
-    int delta = sprintf(temp, "compatibilities = [");
+    PyRun_SimpleString("compatibilities = []");
     for (int i = 0; i < p_function_args->num_compatibilities; ++i) {
-        delta += sprintf(temp + delta, "%d,", p_function_args->compatibilities[i]);
+        sprintf(temp, "compatibilities.append(%d)", p_function_args->compatibilities[i]);
+        PyRun_SimpleString(temp);
     }
-    sprintf(temp + delta, "]");
-    PyRun_SimpleString(temp);
 
     if (PyRun_SimpleString(p_function_args->code) != 0) {
-        return -1;
+        return -3;
     }
 
     PyRun_SimpleString("result = []");
@@ -197,14 +196,14 @@ int pside_run_code(
             "    result.append(x[1])\n" \
             "    result.append(x[2])\n") != 0)
     {
-        return -1;
+        return -2;
     }
 
     if (PyRun_SimpleString("assert len(result) % 3 == 0, f'wfc_solve(...) result is in a wrong shape.'") != 0) {
-        return -1;
+        return -4;
     }
     if (PyRun_SimpleString("assert all(isinstance(x, int) for x in result), 'All items in result must be int.'") != 0) {
-        return -1;
+        return -5;
     }
 
     /* -- Extracting result -- */
@@ -228,8 +227,8 @@ int pside_run_code(
         p_result_callback(p_user_data, result_items, num_result_items);
         Py_DECREF(result);
     } else {
-        return -1;
+        return -6;
     }
 
-    return Py_FinalizeEx() < 0 ? -1 : 0;
+    return Py_FinalizeEx() < 0 ? -7 : 0;
 }

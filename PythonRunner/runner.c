@@ -171,14 +171,17 @@ godot_variant prunner_run(
     function_args.compatibilities = compatibilities;
 
     /* Run */
-    if (pside_run_code(
+    int run_result = pside_run_code(
                 p_user_data,
                 &prunner_stdout_callback,
                 &prunner_stderr_callback,
                 &prunner_result_callback,
-                &function_args) != 0)
+                &function_args);
+    if (run_result != 0)
     {
-        GD_DEBUG("ERROR: while running Python code");
+        char temp[128];
+        sprintf(temp, "ERROR: while running Python code %d", run_result);
+        GD_DEBUG(temp);
     }
 
     api->godot_array_destroy(&compatibilities_arg);
