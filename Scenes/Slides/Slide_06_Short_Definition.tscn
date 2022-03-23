@@ -46,7 +46,7 @@ custom_fonts/bold_font = ExtResource( 1 )
 custom_fonts/normal_font = ExtResource( 2 )
 bbcode_enabled = true
 bbcode_text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
- [b] (In my examples it is going to be 2D)[/b]
+ [b] (In my examples it is 2D)[/b]
 
 - Each tile starts it's life with ability to hold N number of states
   [b] (In my examples state == image fragment)[/b]
@@ -57,12 +57,12 @@ bbcode_text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
 - Each state is limited by constrains in relation with other states
 
 - Loop:
-    - Pick random tile with >1 possible states
-    - Select random available state
+    - Pick a random tile with >1 possible states
+    - Select a random available state (Collapse it)
     - Recursively mark neighbouring tiles according to constrains
-    - Repeat"
+    - Repeat until all tiles are collapsed"
 text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
-  (In my examples it is going to be 2D)
+  (In my examples it is 2D)
 
 - Each tile starts it's life with ability to hold N number of states
    (In my examples state == image fragment)
@@ -73,7 +73,7 @@ text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
 - Each state is limited by constrains in relation with other states
 
 - Loop:
-    - Pick random tile with >1 possible states
-    - Select random available state
+    - Pick a random tile with >1 possible states
+    - Select a random available state (Collapse it)
     - Recursively mark neighbouring tiles according to constrains
-    - Repeat"
+    - Repeat until all tiles are collapsed"
