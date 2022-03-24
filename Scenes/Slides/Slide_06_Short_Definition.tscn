@@ -57,7 +57,7 @@ bbcode_text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
 - Each state is limited by constrains in relation with other states
 
 - Loop:
-    - Pick a random tile with >1 possible states
+    - Pick a random tile with >0 possible states
     - Select a random available state (Collapse it)
     - Recursively mark neighbouring tiles according to constrains
     - Repeat until all tiles are collapsed"
@@ -73,7 +73,7 @@ text = "- Start with a grid of tiles (2D, 3D, 4D?, ...)
 - Each state is limited by constrains in relation with other states
 
 - Loop:
-    - Pick a random tile with >1 possible states
+    - Pick a random tile with >0 possible states
     - Select a random available state (Collapse it)
     - Recursively mark neighbouring tiles according to constrains
     - Repeat until all tiles are collapsed"
